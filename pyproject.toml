@@ -65,6 +65,7 @@ development = [
     "mypy",
     "pylint",
     "pytest",
+    "pytest-benchmark",
     "pytest-cov",
     "pytest-xdist",
     "sympy",
@@ -74,11 +75,6 @@ development = [
 # typing stubs for the OCP CAD kernel
 stubs = [
     "cadquery-ocp-stubs >= 7.8, < 7.9",
-]
-
-# dependency to run the pytest benchmarks
-benchmark = [
-    "pytest-benchmark",
 ]
 
 # dependencies to build the docs
@@ -95,7 +91,6 @@ docs = [
 all = [
     "build123d[ocp_vscode]",
     "build123d[development]",
-    "build123d[benchmark]",
     "build123d[docs]",
     # "build123d[stubs]", # excluded for now as mypy fails
 ]

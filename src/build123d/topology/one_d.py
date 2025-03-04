@@ -133,6 +133,7 @@ from OCP.TopLoc import TopLoc_Location
 from OCP.TopTools import (
     TopTools_HSequenceOfShape,
     TopTools_IndexedDataMapOfShapeListOfShape,
+    TopTools_IndexedMapOfShape,
     TopTools_ListOfShape,
 )
 from OCP.TopoDS import (
@@ -3099,14 +3100,13 @@ def topo_explore_connected_faces(
         parent.wrapped, ta.TopAbs_EDGE, ta.TopAbs_FACE, edge_face_map
     )
 
-    # Query the map
-    faces = []
+    # Query the map and select only unique faces
+    unique_face_map = TopTools_IndexedMapOfShape()
+    unique_faces = []
     if edge_face_map.Contains(edge.wrapped):
-        face_list = edge_face_map.FindFromKey(edge.wrapped)
-        for face in face_list:
-            faces.append(TopoDS.Face_s(face))
+        for face in edge_face_map.FindFromKey(edge.wrapped):
+            unique_face_map.Add(face)
+    for i in range(unique_face_map.Extent()):
+        unique_faces.append(TopoDS.Face_s(unique_face_map(i + 1)))
 
-    if len(faces) != 2:
-        raise RuntimeError("Invalid # of faces connected to this edge")
-
-    return faces
+    return unique_faces

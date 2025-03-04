@@ -173,10 +173,6 @@ class TestTopoExploreConnectedFaces(unittest.TestCase):
         self.assertEqual(len(faces), 2)
 
     def test_topo_explore_connected_faces_invalid(self):
-        # Test with an edge that is not connected to two faces
-        with self.assertRaises(RuntimeError):
-            topo_explore_connected_faces(self.unconnected_edge)
-
         # No parent case
         with self.assertRaises(ValueError):
             topo_explore_connected_faces(Edge())

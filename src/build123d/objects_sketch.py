@@ -109,7 +109,7 @@ class BaseSketchObject(Sketch):
 class Circle(BaseSketchObject):
     """Sketch Object: Circle
 
-    Add circle defined by radius.
+    Create a circle defined by radius.
 
     Args:
         radius (float): circle radius
@@ -139,7 +139,7 @@ class Circle(BaseSketchObject):
 class Ellipse(BaseSketchObject):
     """Sketch Object: Ellipse
 
-    Add ellipse defined by x- and y- radii.
+    Create an ellipse defined by x- and y- radii.
 
     Args:
         x_radius (float): x radius of the ellipse (along the x-axis of plane)
@@ -174,7 +174,7 @@ class Ellipse(BaseSketchObject):
 class Polygon(BaseSketchObject):
     """Sketch Object: Polygon
 
-    Add polygon defined by given sequence of points.
+    Create a polygon defined by given sequence of points.
 
     Note: the order of the points defines the resulting normal of the Face in Algebra
     mode, where counter-clockwise order creates an upward normal while clockwise order
@@ -213,7 +213,7 @@ class Polygon(BaseSketchObject):
 class Rectangle(BaseSketchObject):
     """Sketch Object: Rectangle
 
-    Add rectangle defined by width and height.
+    Create a rectangle defined by width and height.
 
     Args:
         width (float): rectangle width
@@ -248,7 +248,7 @@ class Rectangle(BaseSketchObject):
 class RectangleRounded(BaseSketchObject):
     """Sketch Object: Rectangle Rounded
 
-    Add rectangle defined by width and height with filleted corners.
+    Create a rectangle defined by width and height with filleted corners.
 
     Args:
         width (float): rectangle width
@@ -289,7 +289,7 @@ class RectangleRounded(BaseSketchObject):
 class RegularPolygon(BaseSketchObject):
     """Sketch Object: Regular Polygon
 
-    Add regular polygon defined by radius and side count. Use major_radius to define whether
+    Create a regular polygon defined by radius and side count. Use major_radius to define whether
     the polygon circumscribes (along the vertices) or inscribes (along the sides) the radius circle.
 
     Args:
@@ -361,7 +361,7 @@ class RegularPolygon(BaseSketchObject):
 class SlotArc(BaseSketchObject):
     """Sketch Object: Slot Arc
 
-    Add slot defined by a line and height. May be an arc, stright line, spline, etc.
+    Create a slot defined by a line and height. May be an arc, stright line, spline, etc.
 
     Args:
         arc (Edge | Wire): center line of slot
@@ -393,7 +393,7 @@ class SlotArc(BaseSketchObject):
 class SlotCenterPoint(BaseSketchObject):
     """Sketch Object: Slot Center Point
 
-    Add a slot defined by the center of the slot and the center of one end arc.
+    Create a slot defined by the center of the slot and the center of one end arc.
     The slot will be symmetric about the center point.
 
     Args:
@@ -445,7 +445,7 @@ class SlotCenterPoint(BaseSketchObject):
 class SlotCenterToCenter(BaseSketchObject):
     """Sketch Object: Slot Center To Center
 
-    Add slot defined by the distance between the centers of the two end arcs.
+    Create a slot defined by the distance between the centers of the two end arcs.
 
     Args:
         center_separation (float): distance between arc centers
@@ -488,7 +488,7 @@ class SlotCenterToCenter(BaseSketchObject):
 class SlotOverall(BaseSketchObject):
     """Sketch Object: Slot Overall
 
-    Add slot defined by the overall width and height.
+    Create a slot defined by the overall width and height.
 
     Args:
         width (float): overall width of slot
@@ -537,7 +537,7 @@ class SlotOverall(BaseSketchObject):
 class Text(BaseSketchObject):
     """Sketch Object: Text
 
-    Add text defined by text string and font size.
+    Create text defined by text string and font size.
     May have difficulty finding non-system fonts depending on platform and render default.
     font_path defines an exact path to a font file and overrides font.
 
@@ -603,7 +603,7 @@ class Text(BaseSketchObject):
 class Trapezoid(BaseSketchObject):
     """Sketch Object: Trapezoid
 
-    Add trapezoid defined by major width, height, and interior angle(s).
+    Create a trapezoid defined by major width, height, and interior angle(s).
 
     Args:
         width (float): trapezoid major width
@@ -684,7 +684,7 @@ class Trapezoid(BaseSketchObject):
 class Triangle(BaseSketchObject):
     """Sketch Object: Triangle
 
-    Add a triangle defined by one side length and any of two other side lengths or interior
+    Create a triangle defined by one side length and any of two other side lengths or interior
     angles. The interior angles are opposite the side with the same designation
     (i.e. side 'a' is opposite angle 'A'). Side 'a' is the bottom side, followed by 'b'
     on the right, going counter-clockwise.

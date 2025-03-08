@@ -92,8 +92,8 @@ class BaseEdgeObject(Edge):
 class Bezier(BaseEdgeObject):
     """Line Object: Bezier Curve
 
-    Add a non-rational bezier curve defined by a sequence of points and include optional
-    weights to add a rational bezier curve. The number of weights must match the number
+    Create a non-rational bezier curve defined by a sequence of points and include optional
+    weights to create a rational bezier curve. The number of weights must match the number
     of control points.
 
     Args:
@@ -123,7 +123,7 @@ class Bezier(BaseEdgeObject):
 class CenterArc(BaseEdgeObject):
     """Line Object: Center Arc
 
-    Add a circular arc defined by a center point and radius.
+    Create a circular arc defined by a center point and radius.
 
     Args:
         center (VectorLike): center point of arc
@@ -176,7 +176,7 @@ class CenterArc(BaseEdgeObject):
 class DoubleTangentArc(BaseEdgeObject):
     """Line Object: Double Tangent Arc
 
-    Add a circular arc defined by a point/tangent pair and another line find a tangent to.
+    Create a circular arc defined by a point/tangent pair and another line find a tangent to.
 
     The arc specified with TOP or BOTTOM depends on the geometry and isn't predictable.
 
@@ -275,7 +275,7 @@ class DoubleTangentArc(BaseEdgeObject):
 class EllipticalStartArc(BaseEdgeObject):
     """Line Object: Elliptical Start Arc
 
-    Add an elliptical arc defined by a start point, end point, x- and y- radii.
+    Create an elliptical arc defined by a start point, end point, x- and y- radii.
 
     Args:
         start (VectorLike): start point
@@ -381,7 +381,7 @@ class EllipticalStartArc(BaseEdgeObject):
 class EllipticalCenterArc(BaseEdgeObject):
     """Line Object: Elliptical Center Arc
 
-    Adds an elliptical arc defined by a center point, x- and y- radii.
+    Create an elliptical arc defined by a center point, x- and y- radii.
 
     Args:
         center (VectorLike): ellipse center
@@ -439,7 +439,7 @@ class EllipticalCenterArc(BaseEdgeObject):
 class Helix(BaseEdgeObject):
     """Line Object: Helix
 
-    Add a helix defined by pitch, height, and radius. The helix may have a taper
+    Create a helix defined by pitch, height, and radius. The helix may have a taper
     defined by cone_angle.
 
 
@@ -481,7 +481,7 @@ class Helix(BaseEdgeObject):
 class FilletPolyline(BaseLineObject):
     """Line Object: Fillet Polyline
 
-    Add a sequence of straight lines defined by successive points that are filleted
+    Create a sequence of straight lines defined by successive points that are filleted
     to a given radius.
 
     Args:
@@ -577,7 +577,7 @@ class FilletPolyline(BaseLineObject):
 class JernArc(BaseEdgeObject):
     """Line Object: Jern Arc
 
-    Add a circular arc defined by a start point/tangent pair, radius and arc size.
+    Create a circular arc defined by a start point/tangent pair, radius and arc size.
 
     Args:
         start (VectorLike): start point
@@ -639,7 +639,7 @@ class JernArc(BaseEdgeObject):
 class Line(BaseEdgeObject):
     """Line Object: Line
 
-    Add a straight line defined by two points.
+    Create a straight line defined by two points.
 
     Args:
         pts (VectorLike | Iterable[VectorLike]): sequence of two points
@@ -670,7 +670,7 @@ class Line(BaseEdgeObject):
 class IntersectingLine(BaseEdgeObject):
     """Intersecting Line Object: Line
 
-    Add a straight line defined by a point/direction pair and another line to intersect.
+    Create a straight line defined by a point/direction pair and another line to intersect.
 
     Args:
         start (VectorLike): start point
@@ -711,7 +711,7 @@ class IntersectingLine(BaseEdgeObject):
 class PolarLine(BaseEdgeObject):
     """Line Object: Polar Line
 
-    Add a straight line defined by a start point, length, and angle.
+    Create a straight line defined by a start point, length, and angle.
     The length can specify the DIAGONAL, HORIZONTAL, or VERTICAL component of the triangle
     defined by the angle.
 
@@ -775,7 +775,7 @@ class PolarLine(BaseEdgeObject):
 class Polyline(BaseLineObject):
     """Line Object: Polyline
 
-    Add a sequence of straight lines defined by successive points.
+    Create a sequence of straight lines defined by successive points.
 
     Args:
         pts (VectorLike | Iterable[VectorLike]): sequence of two or more points
@@ -816,7 +816,7 @@ class Polyline(BaseLineObject):
 class RadiusArc(BaseEdgeObject):
     """Line Object: Radius Arc
 
-    Add a circular arc defined by two points and a radius.
+    Create a circular arc defined by two points and a radius.
 
     Args:
         start_point (VectorLike): start point
@@ -868,7 +868,7 @@ class RadiusArc(BaseEdgeObject):
 class SagittaArc(BaseEdgeObject):
     """Line Object: Sagitta Arc
 
-    Add a circular arc defined by two points and the sagitta (height of the arc from chord).
+    Create a circular arc defined by two points and the sagitta (height of the arc from chord).
 
     Args:
         start_point (VectorLike): start point
@@ -912,7 +912,7 @@ class SagittaArc(BaseEdgeObject):
 class Spline(BaseEdgeObject):
     """Line Object: Spline
 
-    Add a spline defined by a sequence of points, optionally constrained by tangents.
+    Create a spline defined by a sequence of points, optionally constrained by tangents.
     Tangents and tangent scalars must have length of 2 for only the end points or a length
     of the number of points.
 
@@ -971,7 +971,7 @@ class Spline(BaseEdgeObject):
 class TangentArc(BaseEdgeObject):
     """Line Object: Tangent Arc
 
-    Add a circular arc defined by two points and a tangent.
+    Create a circular arc defined by two points and a tangent.
 
     Args:
         pts (VectorLike | Iterable[VectorLike]): sequence of two points
@@ -1013,7 +1013,7 @@ class TangentArc(BaseEdgeObject):
 class ThreePointArc(BaseEdgeObject):
     """Line Object: Three Point Arc
 
-    Add a circular arc defined by three points.
+    Create a circular arc defined by three points.
 
     Args:
         pts (VectorLike | Iterable[VectorLike]): sequence of three points

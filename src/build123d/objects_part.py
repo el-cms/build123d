@@ -103,7 +103,7 @@ class BasePartObject(Part):
 class Box(BasePartObject):
     """Part Object: Box
 
-    Add a box defined by length, width, and height.
+    Create a box defined by length, width, and height.
 
     Args:
         length (float): box length
@@ -147,7 +147,7 @@ class Box(BasePartObject):
 class Cone(BasePartObject):
     """Part Object: Cone
 
-    Add a cone defined by bottom radius, top radius, and height.
+    Create a cone defined by bottom radius, top radius, and height.
 
     Args:
         bottom_radius (float): bottom radius
@@ -200,7 +200,7 @@ class Cone(BasePartObject):
 class CounterBoreHole(BasePartObject):
     """Part Operation: Counter Bore Hole
 
-    Subtract a counter bore hole defined by radius, counter bore radius, counter bore and depth.
+    Create a counter bore hole defined by radius, counter bore radius, counter bore and depth.
 
     Args:
         radius (float): hole radius
@@ -253,8 +253,8 @@ class CounterBoreHole(BasePartObject):
 class CounterSinkHole(BasePartObject):
     """Part Operation: Counter Sink Hole
 
-    Subtract a countersink hole defined by radius, countersink radius, countersink
-        angle, and depth.
+    Create a countersink hole defined by radius, countersink radius, countersink
+    angle, and depth.
 
     Args:
         radius (float): hole radius
@@ -311,7 +311,7 @@ class CounterSinkHole(BasePartObject):
 class Cylinder(BasePartObject):
     """Part Object: Cylinder
 
-    Add a cylinder defined by radius and height.
+    Create a cylinder defined by radius and height.
 
     Args:
         radius (float): cylinder radius
@@ -359,7 +359,7 @@ class Cylinder(BasePartObject):
 class Hole(BasePartObject):
     """Part Operation: Hole
 
-    Subtract a hole defined by radius and depth.
+    Create a hole defined by radius and depth.
 
     Args:
         radius (float): hole radius
@@ -406,7 +406,7 @@ class Hole(BasePartObject):
 class Sphere(BasePartObject):
     """Part Object: Sphere
 
-    Add a sphere defined by a radius.
+    Create a sphere defined by a radius.
 
     Args:
         radius (float): sphere radius
@@ -458,7 +458,7 @@ class Sphere(BasePartObject):
 class Torus(BasePartObject):
     """Part Object: Torus
 
-    Add a torus defined by major and minor radii.
+    Create a torus defined by major and minor radii.
 
     Args:
         major_radius (float): major torus radius
@@ -514,7 +514,7 @@ class Torus(BasePartObject):
 class Wedge(BasePartObject):
     """Part Object: Wedge
 
-    Add a wedge with a near face defined by xsize and z size, a far face defined by
+    Create a wedge with a near face defined by xsize and z size, a far face defined by
     xmin to xmax and zmin to zmax, and a depth of ysize.
 
     Args:

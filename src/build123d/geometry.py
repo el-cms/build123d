@@ -2725,10 +2725,11 @@ class Plane(metaclass=PlaneMeta):
         The origin of the workplane is unaffected by the rotation.
 
         Rotations are done in order x, y, z. If you need a different order,
-        manually chain together multiple rotated() commands.
+        specify ordering. e.g. Intrinsic.ZYX changes rotation to 
+        (z angle, y angle, x angle) and rotates in that order.
 
         Args:
-            rotation (VectorLike, optional): (xDegrees, yDegrees, zDegrees).
+            rotation (VectorLike, optional): (x angle, y angle, z angle).
                 Defaults to (0, 0, 0)
             ordering (Intrinsic |  Extrinsic, optional): order of rotations in
                 Intrinsic or Extrinsic rotation mode. Defaults to Intrinsic.XYZ

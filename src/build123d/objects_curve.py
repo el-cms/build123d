@@ -272,7 +272,9 @@ class DoubleTangentArc(BaseEdgeObject):
                 _, p1, _ = other.distance_to_with_closest_points(center)
                 TangentArc(arc_pt, p1, tangent=arc_tangent)
 
-        super().__init__(double.edge(), mode=mode)
+        double_edge = double.edge()
+        assert isinstance(double_edge, Edge)
+        super().__init__(double_edge, mode=mode)
 
 
 class EllipticalStartArc(BaseEdgeObject):
@@ -866,7 +868,9 @@ class RadiusArc(BaseEdgeObject):
         else:
             arc = SagittaArc(start, end, -sagitta, mode=Mode.PRIVATE)
 
-        super().__init__(arc.edge(), mode=mode)
+        arc_edge = arc.edge()
+        assert isinstance(arc_edge, Edge)
+        super().__init__(arc_edge, mode=mode)
 
 
 class SagittaArc(BaseEdgeObject):
@@ -910,7 +914,9 @@ class SagittaArc(BaseEdgeObject):
         sag_point = mid_point + sagitta_vector
 
         arc = ThreePointArc(start, sag_point, end, mode=Mode.PRIVATE)
-        super().__init__(arc.edge(), mode=mode)
+        arc_edge = arc.edge()
+        assert isinstance(arc_edge, Edge)
+        super().__init__(arc_edge, mode=mode)
 
 
 class Spline(BaseEdgeObject):

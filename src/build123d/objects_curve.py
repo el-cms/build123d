@@ -207,6 +207,9 @@ class DoubleTangentArc(BaseEdgeObject):
         context: BuildLine | None = BuildLine._get_context(self)
         validate_inputs(context, self)
 
+        if keep not in [Keep.TOP, Keep.BOTTOM]:
+            raise ValueError(f"Only the TOP or BOTTOM options are supported not {keep}")
+
         arc_pt = WorkplaneList.localize(pnt)
         arc_tangent = WorkplaneList.localize(tangent).normalized()
         if WorkplaneList._get_context() is not None:
@@ -269,7 +272,7 @@ class DoubleTangentArc(BaseEdgeObject):
                 _, p1, _ = other.distance_to_with_closest_points(center)
                 TangentArc(arc_pt, p1, tangent=arc_tangent)
 
-        super().__init__(double.wire(), mode=mode)
+        super().__init__(double.edge(), mode=mode)
 
 
 class EllipticalStartArc(BaseEdgeObject):
@@ -719,7 +722,7 @@ class PolarLine(BaseEdgeObject):
         start (VectorLike): start point
         length (float): line length
         angle (float, optional): angle from the local x-axis
-        direction (VectorLike, optional): vector direction to determine angle        
+        direction (VectorLike, optional): vector direction to determine angle
         length_mode (LengthMode, optional): how length defines the line.
             Defaults to LengthMode.DIAGONAL
         mode (Mode, optional): combination mode. Defaults to Mode.ADD
@@ -863,7 +866,7 @@ class RadiusArc(BaseEdgeObject):
         else:
             arc = SagittaArc(start, end, -sagitta, mode=Mode.PRIVATE)
 
-        super().__init__(arc, mode=mode)
+        super().__init__(arc.edge(), mode=mode)
 
 
 class SagittaArc(BaseEdgeObject):
@@ -907,7 +910,7 @@ class SagittaArc(BaseEdgeObject):
         sag_point = mid_point + sagitta_vector
 
         arc = ThreePointArc(start, sag_point, end, mode=Mode.PRIVATE)
-        super().__init__(arc, mode=mode)
+        super().__init__(arc.edge(), mode=mode)
 
 
 class Spline(BaseEdgeObject):

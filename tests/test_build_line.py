@@ -134,14 +134,16 @@ class BuildLineTests(unittest.TestCase):
             tuple(l5.tangent_at(p1)), tuple(l6.tangent_at(p2) * -1), 5
         )
 
-        l7 = Spline((15, 5), (5, 0), (15, -5), tangents=[(-1, 0), (1, 0)])
-        l8 = DoubleTangentArc((0, 0, 0), (1, 0, 0), l7, keep=Keep.BOTH)
-        self.assertEqual(len(l8.edges()), 2)
+        # l7 = Spline((15, 5), (5, 0), (15, -5), tangents=[(-1, 0), (1, 0)])
+        # l8 = DoubleTangentArc((0, 0, 0), (1, 0, 0), l7, keep=Keep.BOTH)
+        # self.assertEqual(len(l8.edges()), 2)
 
         l9 = EllipticalCenterArc((15, 0), 10, 5, start_angle=90, end_angle=270)
-        l10 = DoubleTangentArc((0, 0, 0), (1, 0, 0), l9, keep=Keep.BOTH)
-        self.assertEqual(len(l10.edges()), 2)
-        self.assertTrue(isinstance(l10, Edge))
+        # l10 = DoubleTangentArc((0, 0, 0), (1, 0, 0), l9, keep=Keep.BOTH)
+        # self.assertEqual(len(l10.edges()), 2)
+        # self.assertTrue(isinstance(l10, Edge))
+        with self.assertRaises(ValueError):
+            l10 = DoubleTangentArc((0, 0, 0), (1, 0, 0), l9, keep=Keep.BOTH)
 
         with self.assertRaises(ValueError):
             DoubleTangentArc((0, 0, 0), (0, 0, 1), l9)
@@ -269,13 +271,17 @@ class BuildLineTests(unittest.TestCase):
 
         with BuildLine():
             a4 = PolarLine((0, 0), 1, angle=30, length_mode=LengthMode.HORIZONTAL)
-            d4 = PolarLine((0, 0), 1, direction=(sqrt(3), 1), length_mode=LengthMode.HORIZONTAL)
+            d4 = PolarLine(
+                (0, 0), 1, direction=(sqrt(3), 1), length_mode=LengthMode.HORIZONTAL
+            )
         self.assertTupleAlmostEquals((a4 @ 1).to_tuple(), (1, 1 / sqrt(3), 0), 5)
         self.assertTupleAlmostEquals((a4 @ 1).to_tuple(), (d4 @ 1).to_tuple(), 5)
 
         with BuildLine(Plane.XZ):
             a5 = PolarLine((0, 0), 1, angle=30, length_mode=LengthMode.VERTICAL)
-            d5 = PolarLine((0, 0), 1, direction=(sqrt(3), 1), length_mode=LengthMode.VERTICAL)
+            d5 = PolarLine(
+                (0, 0), 1, direction=(sqrt(3), 1), length_mode=LengthMode.VERTICAL
+            )
         self.assertTupleAlmostEquals((a5 @ 1).to_tuple(), (sqrt(3), 0, 1), 5)
         self.assertTupleAlmostEquals((a5 @ 1).to_tuple(), (d5 @ 1).to_tuple(), 5)
 

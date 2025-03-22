@@ -1073,7 +1073,7 @@ class PointArcTangentLine(BaseEdgeObject):
         validate_inputs(context, self)
 
         if arc.geom_type != GeomType.CIRCLE:
-            raise ValueError("Arc must have GeomType.CIRCLE")
+            raise ValueError("Arc must have GeomType.CIRCLE.")
 
         tangent_point = WorkplaneList.localize(point)
         if context is None:
@@ -1082,7 +1082,7 @@ class PointArcTangentLine(BaseEdgeObject):
                 *arc.edges()
             )
             if coplane is None:
-                raise ValueError("PointArcTangentLine only works on a single plane")
+                raise ValueError("PointArcTangentLine only works on a single plane.")
 
             workplane = Plane(coplane.origin, z_dir=arc.normal())
         else:
@@ -1094,8 +1094,8 @@ class PointArcTangentLine(BaseEdgeObject):
         radius = arc.radius
         midline = tangent_point - arc_center
 
-        if midline.length < radius:
-            raise ValueError("Cannot find tangent for point inside arc.")
+        if midline.length <= radius:
+            raise ValueError("Cannot find tangent for point on or inside arc.")
 
         # Find angle phi between midline and x
         # and angle theta between midplane length and radius
@@ -1158,7 +1158,7 @@ class PointArcTangentArc(BaseEdgeObject):
                 *arc.edges()
             )
             if coplane is None:
-                raise ValueError("PointArcTangentArc only works on a single plane")
+                raise ValueError("PointArcTangentArc only works on a single plane.")
 
             workplane = Plane(coplane.origin, z_dir=arc.normal())
         else:
@@ -1169,6 +1169,13 @@ class PointArcTangentArc(BaseEdgeObject):
         arc_tangent = Vector(direction).transform(
             workplane.reverse_transform, is_direction=True
         ).normalized()
+
+        midline = arc_point - arc.arc_center
+        if midline.length == arc.radius:
+            raise ValueError("Cannot find tangent for point on arc.")
+
+        if midline.length <= arc.radius:
+            raise NotImplementedError("Point inside arc not yet implemented.")
 
         # Determine where arc_point is located relative to arc
         # ref forms a bisecting line parallel to arc tangent with same distance from arc
@@ -1181,7 +1188,7 @@ class PointArcTangentArc(BaseEdgeObject):
         keep_sign = -1 if side == Side.LEFT else 1
         # Tangent radius to infinity (and beyond)
         if keep_sign * ref_to_point == arc.radius:
-            raise ValueError("Point is already tangent to arc, use tangent line")
+            raise ValueError("Point is already tangent to arc, use tangent line.")
 
         # Use magnitude and sign of ref to arc point along with keep to determine
         #   which "side" angle the arc center will be on
@@ -1244,12 +1251,12 @@ class PointArcTangentArc(BaseEdgeObject):
         # Sanity Checks
         # Confirm tangent point is on arc
         if abs(arc.radius - (tangent_point - arc.arc_center).length) > TOLERANCE:
-            raise RuntimeError("No tangent arc found, no tangent point found")
+            raise RuntimeError("No tangent arc found, no tangent point found.")
 
         # Confirm new tangent point is colinear with point tangent on arc
         arc_dir = arc.tangent_at(tangent_point)
         if tangent_dir.cross(arc_dir).length > TOLERANCE:
-            raise RuntimeError("No tangent arc found, found tangent out of tolerance")
+            raise RuntimeError("No tangent arc found, found tangent out of tolerance.")
 
         arc = TangentArc(arc_point, tangent_point, tangent=arc_tangent)
         super().__init__(arc, mode=mode)
@@ -1285,10 +1292,10 @@ class ArcArcTangentLine(BaseEdgeObject):
         validate_inputs(context, self)
 
         if start_arc.geom_type != GeomType.CIRCLE:
-            raise ValueError("Start arc must have GeomType.CIRCLE")
+            raise ValueError("Start arc must have GeomType.CIRCLE.")
 
         if end_arc.geom_type != GeomType.CIRCLE:
-            raise ValueError("End arc must have GeomType.CIRCLE")
+            raise ValueError("End arc must have GeomType.CIRCLE.")
 
         if context is None:
             # Making the plane validates start arc and end arc are coplanar
@@ -1310,8 +1317,8 @@ class ArcArcTangentLine(BaseEdgeObject):
         radii = [arc.radius for arc in arcs]
         midline = points[1] - points[0]
 
-        if midline.length == 0:
-            raise ValueError("Cannot find tangent for concentric arcs.")
+        if midline.length <= abs(radii[1] - radii[0]):
+            raise ValueError("Cannot find tangent when one arc contains the other.")
 
         if (keep == Keep.INSIDE or keep == Keep.BOTH):
             if midline.length < sum(radii):
@@ -1378,16 +1385,16 @@ class ArcArcTangentArc(BaseEdgeObject):
         validate_inputs(context, self)
 
         if start_arc.geom_type != GeomType.CIRCLE:
-            raise ValueError("Start arc must have GeomType.CIRCLE")
+            raise ValueError("Start arc must have GeomType.CIRCLE.")
 
         if end_arc.geom_type != GeomType.CIRCLE:
-            raise ValueError("End arc must have GeomType.CIRCLE")
+            raise ValueError("End arc must have GeomType.CIRCLE.")
 
         if context is None:
             # Making the plane validates start arc and end arc are coplanar
             coplane = start_arc.edge().common_plane(end_arc.edge())
             if coplane is None:
-                raise ValueError("ArcArcTangentArc only works on a single plane")
+                raise ValueError("ArcArcTangentArc only works on a single plane.")
 
             workplane = Plane(coplane.origin, z_dir=start_arc.normal())
         else:
@@ -1404,6 +1411,12 @@ class ArcArcTangentArc(BaseEdgeObject):
         # make a normal vector for sorting intersections
         midline = points[1] - points[0]
         normal = side_sign * midline.cross(workplane.z_dir)
+
+        if midline.length == 0:
+            raise ValueError("Cannot find tangent for concentric arcs.")
+
+        if midline.length <= abs(radii[1] - radii[0]):
+            raise NotImplementedError("Arc inside arc not yet implemented.")
 
         # The range midline.length / 2 < tangent radius < math.inf should be valid
         # Sometimes fails if min_radius == radius, so using >=

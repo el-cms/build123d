@@ -811,8 +811,10 @@ class Axis(metaclass=AxisMeta):
         and never intersect.
 
         Mathematically, this means:
+
         - The axes are **not parallel** (the cross product of their direction vectors
           is nonzero).
+
         - The axes are **not coplanar** (the vector between their positions is not
           aligned with the plane spanned by their directions).
 
@@ -2725,7 +2727,7 @@ class Plane(metaclass=PlaneMeta):
         The origin of the workplane is unaffected by the rotation.
 
         Rotations are done in order x, y, z. If you need a different order,
-        specify ordering. e.g. Intrinsic.ZYX changes rotation to 
+        specify ordering. e.g. Intrinsic.ZYX changes rotation to
         (z angle, y angle, x angle) and rotates in that order.
 
         Args:

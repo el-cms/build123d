@@ -393,18 +393,23 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
 
         The method determines potential symmetry axes by analyzing the face’s
         geometry:
+
         - It first validates that the face is non-empty and planar.
+
         - For faces with inner wires (holes), it computes the centroid of the
           holes and the face's overall center (COG).
-            If the holes' centroid significantly deviates from the COG (beyond
-            a specified tolerance), the symmetry axis is taken along the line
-            connecting these points; otherwise, each hole’s center is used to
-            generate a candidate axis.
+
+            - If the holes' centroid significantly deviates from the COG (beyond
+              a specified tolerance), the symmetry axis is taken along the line
+              connecting these points; otherwise, each hole’s center is used to
+              generate a candidate axis.
+
         - For faces without holes, candidate directions are derived by sampling
           midpoints along the outer wire's edges.
-            If curved edges are present, additional candidate directions are
-            obtained from an oriented bounding box (OBB) constructed around the
-            face.
+
+            - If curved edges are present, additional candidate directions are
+              obtained from an oriented bounding box (OBB) constructed around the
+              face.
 
         For each candidate direction, the face is split by a plane (defined
         using the candidate direction and the face’s normal).  The top half of the face

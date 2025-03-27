@@ -811,8 +811,10 @@ class Axis(metaclass=AxisMeta):
         and never intersect.
 
         Mathematically, this means:
+
         - The axes are **not parallel** (the cross product of their direction vectors
           is nonzero).
+
         - The axes are **not coplanar** (the vector between their positions is not
           aligned with the plane spanned by their directions).
 
@@ -2722,19 +2724,17 @@ class Plane(metaclass=PlaneMeta):
     ) -> Plane:
         """Returns a copy of this plane, rotated about the specified axes
 
-        Since the z axis is always normal the plane, rotating around Z will
-        always produce a plane that is parallel to this one.
-
         The origin of the workplane is unaffected by the rotation.
 
         Rotations are done in order x, y, z. If you need a different order,
-        manually chain together multiple rotate() commands.
+        specify ordering. e.g. Intrinsic.ZYX changes rotation to
+        (z angle, y angle, x angle) and rotates in that order.
 
         Args:
-            rotation (VectorLike, optional): (xDegrees, yDegrees, zDegrees).
-                Defaults to (0, 0, 0).
+            rotation (VectorLike, optional): (x angle, y angle, z angle).
+                Defaults to (0, 0, 0)
             ordering (Intrinsic |  Extrinsic, optional): order of rotations in
-                Intrinsic or Extrinsic rotation mode, defaults to Intrinsic.XYZ
+                Intrinsic or Extrinsic rotation mode. Defaults to Intrinsic.XYZ
 
         Returns:
             Plane: a copy of this plane rotated as requested.

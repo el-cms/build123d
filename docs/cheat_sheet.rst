@@ -75,6 +75,7 @@ Cheat Sheet
             | :func:`~operations_generic.bounding_box`
             | :func:`~operations_generic.mirror`
             | :func:`~operations_generic.offset`
+            | :func:`~operations_generic.project`
             | :func:`~operations_generic.scale`
             | :func:`~operations_generic.split`
 
@@ -88,6 +89,7 @@ Cheat Sheet
             | :func:`~operations_sketch.make_hull`
             | :func:`~operations_generic.mirror`
             | :func:`~operations_generic.offset`
+            | :func:`~operations_generic.project`
             | :func:`~operations_generic.scale`
             | :func:`~operations_generic.split`
             | :func:`~operations_generic.sweep`
@@ -103,6 +105,7 @@ Cheat Sheet
             | :func:`~operations_part.make_brake_formed`
             | :func:`~operations_generic.mirror`
             | :func:`~operations_generic.offset`
+            | :func:`~operations_generic.project`
             | :func:`~operations_part.revolve`
             | :func:`~operations_generic.scale`
             | :func:`~operations_part.section`
@@ -223,15 +226,19 @@ Cheat Sheet
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.CenterOf`         | GEOMETRY, MASS, BOUNDING_BOX                                                                                                            |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
+    | :class:`~build_enums.Extrinsic`        | XYZ, XZY, YZX, YXZ, ZXY, ZYX, XYX, XZX, YZY, YXY, ZXZ, ZYZ                                                                              |
+    +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.FontStyle`        | REGULAR, BOLD, ITALIC                                                                                                                   |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.FrameMethod`      | CORRECTED, FRENET                                                                                                                       |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.GeomType`         | BEZIER, BSPLINE, CIRCLE, CONE, CYLINDER, ELLIPSE, EXTRUSION, HYPERBOLA, LINE, OFFSET, OTHER, PARABOLA, PLANE, REVOLUTION, SPHERE, TORUS |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
+    | :class:`~build_enums.Intrinsic`        | XYZ, XZY, YZX, YXZ, ZXY, ZYX, XYX, XZX, YZY, YXY, ZXZ, ZYZ                                                                              |
+    +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.HeadType`         | CURVED, FILLETED, STRAIGHT                                                                                                              |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
-    | :class:`~build_enums.Keep`             | TOP, BOTTOM, BOTH, INSIDE, OUTSIDE                                                                                                      |
+    | :class:`~build_enums.Keep`             | ALL, TOP, BOTTOM, BOTH, INSIDE, OUTSIDE                                                                                                 |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.Kind`             | ARC, INTERSECTION, TANGENT                                                                                                              |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
@@ -249,7 +256,7 @@ Cheat Sheet
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.PrecisionMode`    | LEAST, AVERAGE, GREATEST, SESSION                                                                                                       |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
-    | :class:`~build_enums.Select`           | ALL, LAST                                                                                                                               |
+    | :class:`~build_enums.Select`           | ALL, LAST, NEW                                                                                                                          |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.Side`             | BOTH, LEFT, RIGHT                                                                                                                       |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+

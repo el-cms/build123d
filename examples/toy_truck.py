@@ -32,22 +32,8 @@ license:
 """
 
 # [Code]
-import pathlib
 from build123d import *
-from ocp_vscode import ImageFace, show, show_object
-
-# Create an ocp_vscode image object to use as a design reference
-project_root = pathlib.Path(__file__).resolve().parents[1]
-reference_image_path = (
-    project_root / "docs" / "assets" / "examples" / "toy_truck_picture.jpg"
-)
-image = ImageFace(
-    str(reference_image_path),
-    scale=0.012,
-    location=Location((0, 0, -1), (0, 0, 90)),
-)
-show_object(image)
-
+from ocp_vscode import show
 
 # Toy Truck Blue
 truck_color = Color(0x4683CE)

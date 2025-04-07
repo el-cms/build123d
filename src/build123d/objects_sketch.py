@@ -387,7 +387,7 @@ class SlotArc(BaseSketchObject):
         self.slot_height = height
 
         arc = arc if isinstance(arc, Wire) else Wire([arc])
-        face = Face(arc.offset_2d(height / 2)).rotate(Axis.Z, rotation)
+        face = Face(arc.offset_2d(height / 2))
         super().__init__(face, rotation, None, mode)
 
 

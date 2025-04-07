@@ -546,7 +546,7 @@ class Text(BaseSketchObject):
         font_size (float): size of the font in model units
         font (str, optional): font name. Defaults to "Arial"
         font_path (str, optional): system path to font file. Defaults to None
-        font_style (Font_Style, optional): font style, REGULAR, BOLD, or ITALIC.
+        font_style (Font_Style, optional): font style, REGULAR, BOLD, BOLDITALIC, or ITALIC.
             Defaults to Font_Style.REGULAR
         align (Align | tuple[Align, Align], optional): align MIN, CENTER, or MAX of object.
             Defaults to (Align.CENTER, Align.CENTER)

@@ -67,6 +67,7 @@ import OCP.TopAbs as ta
 from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse
 from OCP.Font import (
     Font_FA_Bold,
+    Font_FA_BoldItalic,
     Font_FA_Italic,
     Font_FA_Regular,
     Font_FontMgr,
@@ -306,6 +307,7 @@ class Compound(Mixin3D, Shape[TopoDS_Compound]):
             FontStyle.REGULAR: Font_FA_Regular,
             FontStyle.BOLD: Font_FA_Bold,
             FontStyle.ITALIC: Font_FA_Italic,
+            FontStyle.BOLDITALIC: Font_FA_BoldItalic,
         }[font_style]
 
         mgr = Font_FontMgr.GetInstance_s()

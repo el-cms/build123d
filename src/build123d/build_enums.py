@@ -345,6 +345,20 @@ class SortBy(Enum):
         return f"<{self.__class__.__name__}.{self.name}>"
 
 
+class TextAlign(Enum):
+    """Text Alignment"""
+
+    BOTTOM = auto()
+    CENTER = auto()
+    LEFT = auto()
+    RIGHT = auto()
+    TOP = auto()
+    TOPFIRSTLINE = auto()
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}.{self.name}>"
+
+
 class Transition(Enum):
     """Sweep discontinuity handling option"""
 

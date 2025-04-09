@@ -36,7 +36,7 @@ from typing import cast
 from collections.abc import Iterable
 
 from build123d.build_common import LocationList, flatten_sequence, validate_inputs
-from build123d.build_enums import Align, FontStyle, Mode
+from build123d.build_enums import Align, FontStyle, Mode, TextAlign
 from build123d.build_sketch import BuildSketch
 from build123d.geometry import (
     Axis,
@@ -540,6 +540,7 @@ class Text(BaseSketchObject):
     Create text defined by text string and font size.
     May have difficulty finding non-system fonts depending on platform and render default.
     font_path defines an exact path to a font file and overrides font.
+    text_align aligns texts inside bounding box while align the aligns bounding box
 
     Args:
         txt (str): text to render
@@ -548,8 +549,11 @@ class Text(BaseSketchObject):
         font_path (str, optional): system path to font file. Defaults to None
         font_style (Font_Style, optional): font style, REGULAR, BOLD, BOLDITALIC, or ITALIC.
             Defaults to Font_Style.REGULAR
+        text_align (tuple[TextAlign, TextAlign], optional): horizontal text align
+            LEFT, CENTER, or RIGHT. Vertical text align BOTTOM, CENTER, TOP, or
+            TOPFIRSTLINE. Defaults to (TextAlign.CENTER, TextAlign.CENTER)
         align (Align | tuple[Align, Align], optional): align MIN, CENTER, or MAX of object.
-            Defaults to (Align.CENTER, Align.CENTER)
+            Defaults to None
         path (Edge | Wire, optional): path for text to follow. Defaults to None
         position_on_path (float, optional): the relative location on path to position the
             text, values must be between 0.0 and 1.0. Defaults to 0.0
@@ -567,7 +571,8 @@ class Text(BaseSketchObject):
         font: str = "Arial",
         font_path: str | None = None,
         font_style: FontStyle = FontStyle.REGULAR,
-        align: Align | tuple[Align, Align] | None = (Align.CENTER, Align.CENTER),
+        text_align: tuple[TextAlign, TextAlign] = (TextAlign.CENTER, TextAlign.CENTER),
+        align: Align | tuple[Align, Align] | None = None,
         path: Edge | Wire | None = None,
         position_on_path: float = 0.0,
         rotation: float = 0.0,
@@ -581,6 +586,7 @@ class Text(BaseSketchObject):
         self.font = font
         self.font_path = font_path
         self.font_style = font_style
+        self.text_align = text_align
         self.align = align
         self.text_path = path
         self.position_on_path = position_on_path
@@ -593,6 +599,7 @@ class Text(BaseSketchObject):
             font=font,
             font_path=font_path,
             font_style=font_style,
+            text_align=text_align,
             align=align,
             position_on_path=position_on_path,
             text_path=path,

@@ -370,6 +370,12 @@ class TestBuildSketchObjects(unittest.TestCase):
         self.assertEqual(len(test.sketch.faces()), 4)
         self.assertEqual(t.faces()[0].normal_at(), Vector(0, 0, 1))
 
+        with self.assertRaises(ValueError):
+            Text("test", 2, text_align=(TextAlign.BOTTOM, TextAlign.BOTTOM))
+
+        with self.assertRaises(ValueError):
+            Text("test", 2, text_align=(TextAlign.LEFT, TextAlign.LEFT))
+
     def test_trapezoid(self):
         with BuildSketch() as test:
             t = Trapezoid(6, 2, 63.434948823)

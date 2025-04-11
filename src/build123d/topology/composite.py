@@ -325,7 +325,10 @@ class Compound(Mixin3D, Shape[TopoDS_Compound]):
         }[font_style]
 
         if text_align[0] not in [TextAlign.LEFT, TextAlign.CENTER, TextAlign.RIGHT]:
-            raise ValueError("Horizontal TextAlign must be LEFT, CENTER, or RIGHT")
+            raise ValueError(
+                "Horizontal TextAlign must be LEFT, CENTER, or RIGHT. "
+                f"Got {text_align[0]}"
+            )
 
         if text_align[1] not in [
             TextAlign.BOTTOM,
@@ -334,7 +337,8 @@ class Compound(Mixin3D, Shape[TopoDS_Compound]):
             TextAlign.TOPFIRSTLINE,
         ]:
             raise ValueError(
-                "Vertical TextAlign must be BOTTOM, CENTER, TOP, or TOPFIRSTLINE"
+                "Vertical TextAlign must be BOTTOM, CENTER, TOP, or TOPFIRSTLINE. "
+                f"Got {text_align[1]}"
             )
 
         horiz_align = {

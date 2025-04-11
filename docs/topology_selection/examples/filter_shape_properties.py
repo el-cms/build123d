@@ -4,7 +4,7 @@ from build123d import *
 from ocp_vscode import *
 
 working_path = os.path.dirname(os.path.abspath(__file__))
-filedir = os.path.join(working_path, "..", "..", "assets", "selectors_operators")
+filedir = os.path.join(working_path, "..", "..", "assets", "topology_selection")
 
 with BuildPart() as open_box_builder:
     Box(20, 20, 5)

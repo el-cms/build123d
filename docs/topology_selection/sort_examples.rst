@@ -30,7 +30,7 @@ be used with``group_by``.
     :language: python
     :lines: 19-22
 
-.. figure:: ../assets/selectors_operators/sort_sortby_length.png
+.. figure:: ../assets/topology_selection/sort_sortby_length.png
     :align: center
 
 |
@@ -39,7 +39,7 @@ be used with``group_by``.
     :language: python
     :lines: 24-27
 
-.. figure:: ../assets/selectors_operators/sort_sortby_distance.png
+.. figure:: ../assets/topology_selection/sort_sortby_distance.png
     :align: center
 
 |
@@ -64,7 +64,7 @@ the order is random.
     :language: python
     :lines: 14-15
 
-.. figure:: ../assets/selectors_operators/sort_not_along_wire.png
+.. figure:: ../assets/topology_selection/sort_not_along_wire.png
     :align: center
 
 |
@@ -76,7 +76,7 @@ radii now increase in order.
     :language: python
     :lines: 26-28
 
-.. figure:: ../assets/selectors_operators/sort_along_wire.png
+.. figure:: ../assets/topology_selection/sort_along_wire.png
     :align: center
 
 |
@@ -101,7 +101,7 @@ edge can be found sorting along y-axis.
     :language: python
     :lines: 22-24
 
-.. figure:: ../assets/selectors_operators/sort_axis.png
+.. figure:: ../assets/topology_selection/sort_axis.png
     :align: center
 
 |
@@ -125,7 +125,7 @@ Here we are sorting the boxes by distance from the origin, using an empty ``Vert
     :language: python
     :lines: 15-16
 
-.. figure:: ../assets/selectors_operators/sort_distance_from_origin.png
+.. figure:: ../assets/topology_selection/sort_distance_from_origin.png
     :align: center
 
 |
@@ -138,7 +138,7 @@ their distance from the largest box.
     :language: python
     :lines: 19-20
 
-.. figure:: ../assets/selectors_operators/sort_distance_from_largest.png
+.. figure:: ../assets/topology_selection/sort_distance_from_largest.png
     :align: center
 
 |

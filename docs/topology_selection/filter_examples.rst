@@ -25,7 +25,7 @@ operations, and are sometimes necessary e.g. before sorting or filtering by radi
     :language: python
     :lines: 15
 
-.. figure:: ../assets/selectors_operators/filter_geomtype_line.png
+.. figure:: ../assets/topology_selection/filter_geomtype_line.png
     :align: center
 
 |
@@ -34,7 +34,7 @@ operations, and are sometimes necessary e.g. before sorting or filtering by radi
     :language: python
     :lines: 17
 
-.. figure:: ../assets/selectors_operators/filter_geomtype_cylinder.png
+.. figure:: ../assets/topology_selection/filter_geomtype_cylinder.png
     :align: center
 
 |
@@ -59,7 +59,7 @@ circular edges selects the counterbore faces that meet the joint criteria.
     :language: python
     :lines: 43-47
 
-.. figure:: ../assets/selectors_operators/filter_all_edges_circle.png
+.. figure:: ../assets/topology_selection/filter_all_edges_circle.png
     :align: center
 
 |
@@ -86,7 +86,7 @@ Plane will select faces parallel to the plane.
     part.faces().filter_by(Axis.Z)
     part.faces().filter_by(Plane.XY)
 
-.. figure:: ../assets/selectors_operators/filter_axisplane.png
+.. figure:: ../assets/topology_selection/filter_axisplane.png
     :align: center
 
 |
@@ -101,7 +101,7 @@ to 0. The result is faces parallel to the axis or perpendicular to the plane.
     part.faces().filter_by(lambda f: abs(f.normal_at().dot(Axis.Z.direction) < 1e-6)
     part.faces().filter_by(lambda f: abs(f.normal_at().dot(Plane.XY.z_dir)) < 1e-6)
 
-.. figure:: ../assets/selectors_operators/filter_dot_axisplane.png
+.. figure:: ../assets/topology_selection/filter_dot_axisplane.png
     :align: center
 
 |
@@ -129,7 +129,7 @@ and then filtering for the specific inner wire by radius.
     :language: python
     :lines: 18-21
 
-.. figure:: ../assets/selectors_operators/filter_inner_wire_count.png
+.. figure:: ../assets/topology_selection/filter_inner_wire_count.png
     :align: center
 
 |
@@ -143,7 +143,7 @@ select the top face, and then filter for the circular edges of the inner wires.
     :language: python
     :lines: 25-32
 
-.. figure:: ../assets/selectors_operators/filter_inner_wire_count_linear.png
+.. figure:: ../assets/topology_selection/filter_inner_wire_count_linear.png
     :align: center
 
 |
@@ -170,7 +170,7 @@ any line edges.
     :language: python
     :lines: 26-32
 
-.. figure:: ../assets/selectors_operators/filter_nested.png
+.. figure:: ../assets/topology_selection/filter_nested.png
     :align: center
 
 |
@@ -189,7 +189,7 @@ to highlight the resulting fillets.
     :language: python
     :lines: 3-4, 8-22
 
-.. figure:: ../assets/selectors_operators/filter_shape_properties.png
+.. figure:: ../assets/topology_selection/filter_shape_properties.png
     :align: center
 
 |

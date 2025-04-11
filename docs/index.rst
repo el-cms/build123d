@@ -113,8 +113,8 @@ Table Of Contents
     introductory_examples.rst
     tutorials.rst
     objects.rst
-    selectors_operators.rst
     operations.rst
+    topology_selection.rst
     builders.rst
     joints.rst
     assemblies.rst

@@ -5,7 +5,7 @@ from build123d import *
 from ocp_vscode import *
 
 working_path = os.path.dirname(os.path.abspath(__file__))
-filedir = os.path.join(working_path, "..", "..", "assets", "selectors_operators")
+filedir = os.path.join(working_path, "..", "..", "assets", "topology_selection")
 
 with BuildPart() as fins:
     with GridLocations(4, 6, 4, 4):

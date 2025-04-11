@@ -17,7 +17,7 @@ result knowing how many edges to expect.
         :language: python
         :lines: 4, 9-17
 
-.. figure:: ../assets/selectors_operators/group_axis_without.png
+.. figure:: ../assets/topology_selection/group_axis_without.png
     :align: center
 
 |
@@ -29,7 +29,7 @@ group again by length. In both cases, you can select the desired edges from the 
     :language: python
     :lines: 21-22
 
-.. figure:: ../assets/selectors_operators/group_axis_with.png
+.. figure:: ../assets/topology_selection/group_axis_with.png
     :align: center
 
 |
@@ -53,7 +53,7 @@ with the largest hole.
     :language: python
     :lines: 21-24
 
-.. figure:: ../assets/selectors_operators/group_hole_area.png
+.. figure:: ../assets/topology_selection/group_hole_area.png
     :align: center
 
 |
@@ -79,7 +79,7 @@ then the desired groups are selected with the ``group`` method using the lengths
     :language: python
     :lines: 30, 31
 
-.. figure:: ../assets/selectors_operators/group_length_key.png
+.. figure:: ../assets/topology_selection/group_length_key.png
     :align: center
 
 |
@@ -101,7 +101,7 @@ and then further specify only the edges the bearings and pins are installed from
     :language: python
     :lines: 47-50
 
-.. figure:: ../assets/selectors_operators/group_radius_key.png
+.. figure:: ../assets/topology_selection/group_radius_key.png
     :align: center
 
 |

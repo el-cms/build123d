@@ -5,7 +5,7 @@ from build123d import *
 from ocp_vscode import *
 
 working_path = os.path.dirname(os.path.abspath(__file__))
-filedir = os.path.join(working_path, "..", "..", "assets", "selectors_operators")
+filedir = os.path.join(working_path, "..", "..", "assets", "topology_selection")
 
 selectors = [solids, vertices, edges, faces]
 line = Line((-9, -9), (9, 9))
@@ -91,3 +91,10 @@ save_screenshot(os.path.join(filedir, "operators_group_area.png"))
 faces = part.faces().filter_by(lambda f: f.normal_at() == Vector(0, 0, 1))
 show(part, [f.translate(f.normal_at() * 0.01) for f in faces])
 save_screenshot(os.path.join(filedir, "operators_filter_z_normal.png"))
+
+box = Box(5, 5, 1)
+circle = Cylinder(2, 5)
+part = box + circle
+edges = new_edges(box, circle, combined=part)
+show(part, edges)
+save_screenshot(os.path.join(filedir, "selectors_new_edges.png"))

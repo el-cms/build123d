@@ -414,6 +414,9 @@ class TestLocation(unittest.TestCase):
         self.assertEqual(Pos(Vector(1, 2, 3)).position, Vector(1, 2, 3))
         self.assertEqual(Pos(1, Y=2, Z=3).position, Vector(1, 2, 3))
 
+    def test_center(self):
+        self.assertEqual(Location((2, 4, 8), (1, 2, 3)).center(), Vector(2, 4, 8))
+
 
 if __name__ == "__main__":
     unittest.main()

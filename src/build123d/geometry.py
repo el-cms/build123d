@@ -1709,6 +1709,10 @@ class Location:
         """intersect axis with other &"""
         return self.intersect(other)
 
+    def center(self) -> Vector:
+        """Return center of the location - useful for sorting"""
+        return self.position
+
     def to_axis(self) -> Axis:
         """Convert the location into an Axis"""
         return Axis.Z.located(self)

@@ -1713,6 +1713,46 @@ class Location:
         """Return center of the location - useful for sorting"""
         return self.position
 
+    def mirror(self, mirror_plane: Plane) -> Location:
+        """
+        Return a new Location mirrored across the given plane.
+
+        This method reflects both the position and orientation of the current Location
+        across the specified mirror_plane using affine vector mathematics.
+
+        Due to the mathematical properties of reflection:
+            - The true mirror of a right-handed coordinate system is a *left-handed* one.
+
+        However, `build123d` requires all coordinate systems to be right-handed.
+        Therefore, this implementation:
+            - Reflects the X and Z directions across the mirror plane
+            - Recomputes the Y direction as: `Y = X × Z`
+
+        This ensures the resulting Location maintains a valid right-handed frame,
+        while remaining as close as possible to the geometric mirror.
+
+        Args:
+            mirror_plane (Plane): The plane to mirror across.
+
+        Returns:
+            Location: A new mirrored Location that preserves right-handedness.
+        """
+
+        def mirror_dir(v: Vector, pln: Plane) -> Vector:
+            return v - 2 * (v.dot(pln.z_dir)) * pln.z_dir
+
+        # Mirror the location position
+        to_plane = self.position - mirror_plane.origin
+        distance = to_plane.dot(mirror_plane.z_dir)
+        pos = self.position - 2 * distance * mirror_plane.z_dir
+
+        # Mirror the orientation
+        loc_plane = Plane(self)
+        mx_dir = mirror_dir(loc_plane.x_dir, mirror_plane)
+        mz_dir = mirror_dir(loc_plane.z_dir, mirror_plane)
+
+        return Location(Plane(origin=pos, x_dir=mx_dir, z_dir=mz_dir))
+
     def to_axis(self) -> Axis:
         """Convert the location into an Axis"""
         return Axis.Z.located(self)

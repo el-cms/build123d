@@ -417,6 +417,28 @@ class TestLocation(unittest.TestCase):
     def test_center(self):
         self.assertEqual(Location((2, 4, 8), (1, 2, 3)).center(), Vector(2, 4, 8))
 
+    def test_mirror_location(self):
+        # Original location: positioned at (10, 0, 5) with a rotated orientation
+        loc = Location((10, 0, 5), (30, 45, 60))
+
+        # Mirror across the YZ plane (X-flip)
+        mirror_plane = Plane.YZ
+        mirrored = loc.mirror(mirror_plane)
+
+        # Check mirrored position
+        expected_position = Vector(-10, 0, 5)
+        self.assertEqual(
+            mirrored.position,
+            expected_position,
+            msg=f"Expected position {expected_position}, got {mirrored.position}",
+        )
+
+        # Check that the mirrored orientation is still right-handed
+        plane = Plane(mirrored)
+        cross = plane.x_dir.cross(plane.y_dir)
+        dot = cross.dot(plane.z_dir)
+        self.assertGreater(dot, 0.999, "Orientation is not right-handed")
+
 
 if __name__ == "__main__":
     unittest.main()

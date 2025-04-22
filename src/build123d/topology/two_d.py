@@ -1232,9 +1232,9 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         """Location at the u/v position of face"""
         origin = self.position_at(u, v)
         if x_dir is None:
-            pln = Plane(origin, z_dir=self.normal_at(origin))
+            pln = Plane(origin, z_dir=self.normal_at(u, v))
         else:
-            pln = Plane(origin, x_dir=Vector(x_dir), z_dir=self.normal_at(origin))
+            pln = Plane(origin, x_dir=Vector(x_dir), z_dir=self.normal_at(u, v))
         return Location(pln)
 
     def make_holes(self, interior_wires: list[Wire]) -> Face:

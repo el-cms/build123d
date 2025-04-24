@@ -494,6 +494,9 @@ class TestBuildSketchObjects(unittest.TestCase):
         with self.assertRaises(ValueError):
             full_round(trap.edges().sort_by(Axis.X)[-1])
 
+        with self.assertRaises(ValueError):
+            full_round(Edge.make_line((0, 0), (1, 0)))
+
         l1 = Edge.make_spline([(-1, 0), (1, 0)], tangents=((0, -8), (0, 8)), scale=True)
         l2 = Edge.make_line(l1 @ 0, l1 @ 1)
         face = Face(Wire([l1, l2]))
@@ -507,6 +510,21 @@ class TestBuildSketchObjects(unittest.TestCase):
         self.assertLess(negative.area, positive.area)
         self.assertAlmostEqual(r1, r2, 2)
         self.assertTupleAlmostEquals(tuple(c1), tuple(c2), 2)
+
+        rect = Rectangle(34, 10)
+        convex_rect = full_round((rect.edges() << Axis.X)[0])[0]
+        concave_rect = full_round((rect.edges() << Axis.X)[0], invert=True)[0]
+        self.assertLess(convex_rect.area, rect.area)
+        self.assertLess(concave_rect.area, convex_rect.area)
+
+        tri = Triangle(a=10, b=10, c=10)
+        tri_round = full_round(tri.edges().sort_by(Axis.X)[0])[0]
+        self.assertLess(tri_round.area, tri.area)
+
+        # Test flipping the face
+        flipped = -Rectangle(34, 10).face()
+        rounded = full_round((flipped.edges() << Axis.X)[0])[0].face()
+        self.assertEqual(flipped.normal_at(), rounded.normal_at())
 
 
 @pytest.mark.parametrize(

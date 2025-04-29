@@ -64,14 +64,14 @@ class TestShapeList(unittest.TestCase):
         actual_lines = actual.splitlines()
         self.assertEqual(len(actual_lines), len(expected_lines))
         for actual_line, expected_line in zip(actual_lines, expected_lines):
-            start, end = re.split(r"at 0x[0-9a-f]+", expected_line, 2, re.I)
+            start, end = re.split(r"at 0x[0-9a-f]+", expected_line, maxsplit=2, flags=re.I)
             self.assertTrue(actual_line.startswith(start))
             self.assertTrue(actual_line.endswith(end))
 
     def assertDunderReprEqual(self, actual: str, expected: str):
         splitter = r"at 0x[0-9a-f]+"
-        actual_split_list = re.split(splitter, actual, 0, re.I)
-        expected_split_list = re.split(splitter, expected, 0, re.I)
+        actual_split_list = re.split(splitter, actual, maxsplit=0, flags=re.I)
+        expected_split_list = re.split(splitter, expected, maxsplit=0, flags=re.I)
         for actual_split, expected_split in zip(actual_split_list, expected_split_list):
             self.assertEqual(actual_split, expected_split)
 

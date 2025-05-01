@@ -36,7 +36,7 @@ from typing import cast
 from collections.abc import Iterable
 
 from build123d.build_common import LocationList, flatten_sequence, validate_inputs
-from build123d.build_enums import Align, FontStyle, Mode
+from build123d.build_enums import Align, FontStyle, Mode, TextAlign
 from build123d.build_sketch import BuildSketch
 from build123d.geometry import (
     Axis,
@@ -538,21 +538,37 @@ class Text(BaseSketchObject):
     """Sketch Object: Text
 
     Create text defined by text string and font size.
-    May have difficulty finding non-system fonts depending on platform and render default.
-    font_path defines an exact path to a font file and overrides font.
 
+    Fonts installed to the system can be specified by name and FontStyle. Fonts with
+    subfamilies not in FontStyle should be specified with the subfamily name, e.g.
+    "Arial Black". Alternatively, a specific font file can be specified with font_path.
+
+    Note: Windows 10+ users must "Install for all users" for fonts to be found by name.
+    
+    Not all fonts have every FontStyle available, however ITALIC and BOLDITALIC will
+    still italicize the font if the respective font file is not available. 
+
+    text_align specifies alignment of text inside the bounding box, while align the 
+    aligns the bounding box itself.
+
+    Optionally, the Text can be positioned on a non-linear edge or wire with a path and 
+    position_on_path.
+    
     Args:
         txt (str): text to render
         font_size (float): size of the font in model units
         font (str, optional): font name. Defaults to "Arial"
         font_path (str, optional): system path to font file. Defaults to None
-        font_style (Font_Style, optional): font style, REGULAR, BOLD, or ITALIC.
-            Defaults to Font_Style.REGULAR
-        align (Align | tuple[Align, Align], optional): align MIN, CENTER, or MAX of object.
-            Defaults to (Align.CENTER, Align.CENTER)
+        font_style (Font_Style, optional): font style, REGULAR, BOLD, BOLDITALIC, or
+            ITALIC. Defaults to Font_Style.REGULAR
+        text_align (tuple[TextAlign, TextAlign], optional): horizontal text align
+            LEFT, CENTER, or RIGHT. Vertical text align BOTTOM, CENTER, TOP, or
+            TOPFIRSTLINE. Defaults to (TextAlign.CENTER, TextAlign.CENTER)
+        align (Align | tuple[Align, Align], optional): align MIN, CENTER, or MAX of 
+            object. Defaults to None
         path (Edge | Wire, optional): path for text to follow. Defaults to None
-        position_on_path (float, optional): the relative location on path to position the
-            text, values must be between 0.0 and 1.0. Defaults to 0.0
+        position_on_path (float, optional): the relative location on path to position 
+            the text, values must be between 0.0 and 1.0. Defaults to 0.0
         rotation (float, optional): angle to rotate object. Defaults to 0
         mode (Mode, optional): combination mode. Defaults to Mode.ADD
     """
@@ -567,7 +583,8 @@ class Text(BaseSketchObject):
         font: str = "Arial",
         font_path: str | None = None,
         font_style: FontStyle = FontStyle.REGULAR,
-        align: Align | tuple[Align, Align] | None = (Align.CENTER, Align.CENTER),
+        text_align: tuple[TextAlign, TextAlign] = (TextAlign.CENTER, TextAlign.CENTER),
+        align: Align | tuple[Align, Align] | None = None,
         path: Edge | Wire | None = None,
         position_on_path: float = 0.0,
         rotation: float = 0.0,
@@ -581,6 +598,7 @@ class Text(BaseSketchObject):
         self.font = font
         self.font_path = font_path
         self.font_style = font_style
+        self.text_align = text_align
         self.align = align
         self.text_path = path
         self.position_on_path = position_on_path
@@ -593,6 +611,7 @@ class Text(BaseSketchObject):
             font=font,
             font_path=font_path,
             font_style=font_style,
+            text_align=text_align,
             align=align,
             position_on_path=position_on_path,
             text_path=path,

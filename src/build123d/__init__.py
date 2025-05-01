@@ -63,6 +63,7 @@ __all__ = [
     "Select",
     "Side",
     "SortBy",
+    "TextAlign",
     "Transition",
     "Unit",
     "Until",

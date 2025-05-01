@@ -361,13 +361,20 @@ class TestBuildSketchObjects(unittest.TestCase):
         self.assertEqual(t.font, "Arial")
         self.assertIsNone(t.font_path)
         self.assertEqual(t.font_style, FontStyle.REGULAR)
-        self.assertEqual(t.align, (Align.CENTER, Align.CENTER))
+        self.assertEqual(t.text_align, (TextAlign.CENTER, TextAlign.CENTER))
+        self.assertIsNone(t.align)
         self.assertIsNone(t.text_path)
         self.assertEqual(t.position_on_path, 0)
         self.assertEqual(t.rotation, 0)
         self.assertEqual(t.mode, Mode.ADD)
         self.assertEqual(len(test.sketch.faces()), 4)
         self.assertEqual(t.faces()[0].normal_at(), Vector(0, 0, 1))
+
+        with self.assertRaises(ValueError):
+            Text("test", 2, text_align=(TextAlign.BOTTOM, TextAlign.BOTTOM))
+
+        with self.assertRaises(ValueError):
+            Text("test", 2, text_align=(TextAlign.LEFT, TextAlign.LEFT))
 
     def test_trapezoid(self):
         with BuildSketch() as test:

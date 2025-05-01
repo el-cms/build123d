@@ -25,3 +25,7 @@ jobs:
           python -m pytest --benchmark-only --benchmark-autosave
           pytest-benchmark compare --csv="results.csv"
           cat results.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: results.csv

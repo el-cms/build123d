@@ -27,5 +27,5 @@ jobs:
           cat results.csv
       - uses: actions/upload-artifact@v4
         with:
-          name: benchmark-results
+          name: benchmark-results-${{ matrix.os }}
           path: results.csv

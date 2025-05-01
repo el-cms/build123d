@@ -2215,9 +2215,14 @@ class Comparable(ABC):
     def __lt__(self, other: Any) -> bool: ...
 
 
+class SupportsLessThan(Protocol):
+    def __lt__(self, other: Any) -> bool: ...
+
+
 # This TypeVar allows IDEs to see the type of objects within the ShapeList
 T = TypeVar("T", bound=Union[Shape, Vector])
-K = TypeVar("K", bound=Comparable)
+# K = TypeVar("K", bound=Comparable)
+K = TypeVar("K", bound=SupportsLessThan)
 
 
 class ShapePredicate(Protocol):

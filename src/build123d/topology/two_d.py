@@ -301,9 +301,7 @@ class Mixin2D(Shape):
             axis = Axis(point, direction)
             face = self.faces_intersected_by_axis(axis).sort_by(
                 lambda f: f.distance_to(point)
-            )[
-                0
-            ]  # type: ignore[type-var]
+            )[0]
             intersections = face.find_intersection_points(axis)
             if not intersections:
                 raise RuntimeError(
@@ -1711,7 +1709,7 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         """
 
         if isinstance(planar_shape, Edge):
-            return self._wrap_edge(planar_shape, surface_loc, tolerance)
+            return self._wrap_edge(planar_shape, surface_loc, True, tolerance)
         elif isinstance(planar_shape, Wire):
             return self._wrap_wire(
                 planar_shape, surface_loc, tolerance, extension_factor

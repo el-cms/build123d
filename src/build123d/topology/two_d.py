@@ -1799,7 +1799,9 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         surface_geometry = BRep_Tool.Surface_s(self.wrapped)
 
         if len(planar_wire.edges()) == 1:
-            return Wire([self._wrap_edge(planar_wire.edge(), surface_loc, tolerance)])
+            return Wire(
+                [self._wrap_edge(planar_wire.edge(), surface_loc, True, tolerance)]
+            )
 
         planar_edges = planar_wire.order_edges()
         wrapped_edges: list[Edge] = []
@@ -1821,7 +1823,7 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
                 Vector(0, 0, 0), planar_edges[0].position_at(0)
             )
             wrapped_construction_line: Edge = self._wrap_edge(
-                construction_line, surface_loc, tolerance
+                construction_line, surface_loc, True, tolerance
             )
             edge_surface_point = wrapped_construction_line.position_at(1)
             planar_edge_end_point = planar_edges[0].position_at(0)
@@ -1837,7 +1839,7 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         for planar_edge in planar_edges:
             local_planar_edge = planar_edge.translate(-planar_edge_end_point)
             wrapped_edge: Edge = self._wrap_edge(
-                local_planar_edge, edge_surface_location, tolerance
+                local_planar_edge, edge_surface_location, True, tolerance
             )
             edge_surface_point = wrapped_edge.position_at(1)
             edge_surface_location = Location(

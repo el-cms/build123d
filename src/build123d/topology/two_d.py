@@ -1799,9 +1799,9 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         surface_geometry = BRep_Tool.Surface_s(self.wrapped)
 
         if len(planar_wire.edges()) == 1:
-            return Wire(
-                [self._wrap_edge(planar_wire.edge(), surface_loc, True, tolerance)]
-            )
+            planar_edge = planar_wire.edge()
+            assert planar_edge is not None
+            return Wire([self._wrap_edge(planar_edge, surface_loc, True, tolerance)])
 
         planar_edges = planar_wire.order_edges()
         wrapped_edges: list[Edge] = []

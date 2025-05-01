@@ -301,7 +301,9 @@ class Mixin2D(Shape):
             axis = Axis(point, direction)
             face = self.faces_intersected_by_axis(axis).sort_by(
                 lambda f: f.distance_to(point)
-            )[0]
+            )[
+                0
+            ]  # type: ignore[type-var]
             intersections = face.find_intersection_points(axis)
             if not intersections:
                 raise RuntimeError(
@@ -342,7 +344,7 @@ class Mixin2D(Shape):
             surface_normal = surface_loc.z_axis.direction
 
             # Seed the wrapped path
-            wrapped_edge_points: list[Vector] = []
+            wrapped_edge_points: list[VectorLike] = []
             planar_position = planar_edge.position_at(0)
             current_point, current_normal = _find_point_on_surface(
                 surface_origin, surface_normal, planar_position

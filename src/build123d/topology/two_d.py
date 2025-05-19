@@ -1754,6 +1754,71 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
                 f"{type(planar_shape)}"
             )
 
+    def wrap_faces(
+        self,
+        faces: Iterable[Face],
+        path: Wire | Edge,
+        start: float = 0.0,
+    ) -> ShapeList[Face]:
+        """wrap_faces
+
+        Wrap a sequence of 2D faces onto a 3D surface, aligned along a guiding path.
+
+        This method places multiple planar `Face` objects (defined in the XY plane) onto a
+        curved 3D surface (`self`), following a given path (Wire or Edge) that lies on or
+        closely follows the surface. Each face is spaced along the path according to its
+        original horizontal (X-axis) position, preserving the relative layout of the input
+        faces.
+
+        The wrapping process attempts to maintain the shape and size of each face while
+        minimizing distortion. Each face is repositioned to the origin, then individually
+        wrapped onto the surface starting at a specific point along the path. The face's
+        new orientation is defined using the path's tangent direction and the surface normal
+        at that point.
+
+        This is particularly useful for placing a series of features—such as embossed logos,
+        engraved labels, or patterned tiles—onto a freeform or cylindrical surface, aligned
+        along a reference edge or curve.
+
+        Args:
+            faces (Iterable[Face]): An iterable of 2D planar faces to be wrapped.
+            path (Wire | Edge): A curve on the target surface that defines the alignment
+                direction. The X-position of each face is mapped to a relative position
+                along this path.
+            start (float, optional): The relative starting point on the path (between 0.0
+                and 1.0) where the first face should be placed. Defaults to 0.0.
+
+        Returns:
+            ShapeList[Face]: A list of wrapped face objects, aligned and conformed to the
+                surface.
+        """
+        path_length = path.length
+
+        face_list = list(faces)
+        first_face_min_x = face_list[0].bounding_box().min.X
+
+        # Position each face at the origin and wrap onto surface
+        wrapped_faces: ShapeList[Face] = ShapeList()
+        for face in face_list:
+            bbox = face.bounding_box()
+            face_center_x = (bbox.min.X + bbox.max.X) / 2
+            delta_x = face_center_x - first_face_min_x
+            relative_position_on_wire = start + delta_x / path_length
+            path_position = path.position_at(relative_position_on_wire)
+            surface_location = Location(
+                Plane(
+                    path_position,
+                    x_dir=path.tangent_at(relative_position_on_wire),
+                    z_dir=self.normal_at(path_position),
+                )
+            )
+            assert isinstance(face.position, Vector)
+            face.position -= (delta_x, 0, 0)  # Shift back to origin
+            wrapped_face = Face.wrap(self, face, surface_location)
+            wrapped_faces.append(wrapped_face)
+
+        return wrapped_faces
+
     def _uv_bounds(self) -> tuple[float, float, float, float]:
         """Return the u min, u max, v min, v max values"""
         return BRepTools.UVBounds_s(self.wrapped)

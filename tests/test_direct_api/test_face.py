@@ -50,6 +50,7 @@ from build123d.objects_sketch import (
     Polygon,
     Rectangle,
     RegularPolygon,
+    Text,
     Triangle,
 )
 from build123d.operations_generic import fillet, offset
@@ -887,6 +888,22 @@ class TestFace(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             surface.wrap(star, target)
+
+    def test_wrap_faces(self):
+        sphere = Solid.make_sphere(50, angle1=-90).face()
+        surface = sphere.face()
+        path: Edge = (
+            sphere.cut(
+                Solid.make_cylinder(80, 100, Plane.YZ).locate(Location((-50, 0, -70)))
+            )
+            .edges()
+            .sort_by(Axis.Z)[0]
+            .reversed()
+        )
+        text = Text(txt="ei", font_size=15, align=(Align.MIN, Align.CENTER))
+        wrapped_faces = surface.wrap_faces(text.faces(), path, 0.2)
+        self.assertEqual(len(wrapped_faces), 3)
+        self.assertTrue(all(not f.is_planar_face for f in wrapped_faces))
 
     def test_revolve(self):
         l1 = Edge.make_line((3, 0), (3, 2))

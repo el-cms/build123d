@@ -53,6 +53,7 @@ from build123d.topology import (
     Face,
     ShapeList,
     Sketch,
+    Vertex,
     Wire,
     tuplify,
     topo_explore_common_vertex,
@@ -782,12 +783,15 @@ class Triangle(BaseSketchObject):
         self.vertex_A = topo_explore_common_vertex(
             self.edge_b, self.edge_c
         )  #: vertex 'A'
+        assert isinstance(self.vertex_A, Vertex)
         self.vertex_A.topo_parent = self
         self.vertex_B = topo_explore_common_vertex(
             self.edge_a, self.edge_c
         )  #: vertex 'B'
+        assert isinstance(self.vertex_B, Vertex)
         self.vertex_B.topo_parent = self
         self.vertex_C = topo_explore_common_vertex(
             self.edge_a, self.edge_b
         )  #: vertex 'C'
+        assert isinstance(self.vertex_C, Vertex)
         self.vertex_C.topo_parent = self

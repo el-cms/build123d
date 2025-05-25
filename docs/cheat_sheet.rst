@@ -99,6 +99,7 @@ Cheat Sheet
 
             | :func:`~operations_generic.add`
             | :func:`~operations_generic.chamfer`
+            | :func:`~operations_part.draft`
             | :func:`~operations_part.extrude`
             | :func:`~operations_generic.fillet`
             | :func:`~operations_part.loft`
@@ -228,7 +229,7 @@ Cheat Sheet
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.Extrinsic`        | XYZ, XZY, YZX, YXZ, ZXY, ZYX, XYX, XZX, YZY, YXY, ZXZ, ZYZ                                                                              |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
-    | :class:`~build_enums.FontStyle`        | REGULAR, BOLD, BOLDITALIC, ITALIC                                                                                                                   |
+    | :class:`~build_enums.FontStyle`        | REGULAR, BOLD, BOLDITALIC, ITALIC                                                                                                       |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
     | :class:`~build_enums.FrameMethod`      | CORRECTED, FRENET                                                                                                                       |
     +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+

@@ -275,8 +275,8 @@ class TestPlane(unittest.TestCase):
     def test_localize_vertex(self):
         vertex = Vertex(random.random(), random.random(), random.random())
         np.testing.assert_allclose(
-            Plane.YZ.to_local_coords(vertex).to_tuple(),
-            Plane.YZ.to_local_coords(Vector(vertex)).to_tuple(),
+            tuple(Plane.YZ.to_local_coords(vertex)),
+            tuple(Plane.YZ.to_local_coords(Vector(vertex))),
             5,
         )
 

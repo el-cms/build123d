@@ -758,9 +758,7 @@ def project(
 
     # The size of the object determines the size of the target projection screen
     # as the screen is normal to the direction of parallel projection
-    shape_list = [
-        Vertex(*o.to_tuple()) if isinstance(o, Vector) else o for o in object_list
-    ]
+    shape_list = [Vertex(o) if isinstance(o, Vector) else o for o in object_list]
     object_size = Compound(children=shape_list).bounding_box(optimal=False).diagonal
 
     vct_vrt_list = [o for o in object_list if isinstance(o, (Vector, Vertex))]

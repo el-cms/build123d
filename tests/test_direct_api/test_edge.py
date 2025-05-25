@@ -234,7 +234,7 @@ class TestEdge(unittest.TestCase):
         for i, loc in enumerate(locs):
             self.assertAlmostEqual(
                 loc.position,
-                Vector(1, 0, 0).rotate(Axis.Z, i * 90).to_tuple(),
+                Vector(1, 0, 0).rotate(Axis.Z, i * 90),
                 5,
             )
             self.assertAlmostEqual(loc.orientation, (0, 0, 0), 5)

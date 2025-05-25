@@ -265,10 +265,10 @@ class TestLocation(unittest.TestCase):
         loc1 = Location((1, 2, 3), (90, 45, 22.5))
         loc2 = copy.copy(loc1)
         loc3 = copy.deepcopy(loc1)
-        self.assertAlmostEqual(loc1.position, loc2.position.to_tuple(), 6)
-        self.assertAlmostEqual(loc1.orientation, loc2.orientation.to_tuple(), 6)
-        self.assertAlmostEqual(loc1.position, loc3.position.to_tuple(), 6)
-        self.assertAlmostEqual(loc1.orientation, loc3.orientation.to_tuple(), 6)
+        self.assertAlmostEqual(loc1.position, loc2.position, 6)
+        self.assertAlmostEqual(loc1.orientation, loc2.orientation, 6)
+        self.assertAlmostEqual(loc1.position, loc3.position, 6)
+        self.assertAlmostEqual(loc1.orientation, loc3.orientation, 6)
 
     # deprecated
     # def test_to_axis(self):

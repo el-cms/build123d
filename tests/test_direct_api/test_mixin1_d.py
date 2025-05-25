@@ -53,10 +53,8 @@ class TestMixin1D(unittest.TestCase):
             5,
         )
         # Not sure what PARAMETER mode returns - but it's in the ballpark
-        point = (
-            Edge.make_line((0, 0, 0), (1, 1, 1))
-            .position_at(0.5, position_mode=PositionMode.PARAMETER)
-            .to_tuple()
+        point = Edge.make_line((0, 0, 0), (1, 1, 1)).position_at(
+            0.5, position_mode=PositionMode.PARAMETER
         )
         self.assertTrue(all([0.0 < v < 1.0 for v in point]))
 
@@ -119,10 +117,8 @@ class TestMixin1D(unittest.TestCase):
             (-1, 0, 0),
             5,
         )
-        tangent = (
-            Edge.make_circle(1, start_angle=0, end_angle=90)
-            .tangent_at(0.0, position_mode=PositionMode.PARAMETER)
-            .to_tuple()
+        tangent = Edge.make_circle(1, start_angle=0, end_angle=90).tangent_at(
+            0.0, position_mode=PositionMode.PARAMETER
         )
         self.assertTrue(all([0.0 <= v <= 1.0 for v in tangent]))
 

@@ -274,6 +274,12 @@ class Vector:
 
     def to_tuple(self) -> tuple[float, float, float]:
         """Return tuple equivalent"""
+        warnings.warn(
+            "to_tuple is deprecated and will be removed in a future version. "
+            "Use 'tuple(Vector)' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return (self.X, self.Y, self.Z)
 
     @property
@@ -728,11 +734,13 @@ class Axis(metaclass=AxisMeta):
 
     def __repr__(self) -> str:
         """Display self"""
-        return f"({self.position.to_tuple()},{self.direction.to_tuple()})"
+        return f"({tuple(self.position)},{tuple(self.direction)})"
 
     def __str__(self) -> str:
         """Display self"""
-        return f"{type(self).__name__}: ({self.position.to_tuple()},{self.direction.to_tuple()})"
+        return (
+            f"{type(self).__name__}: ({tuple(self.position)},{tuple(self.direction)})"
+        )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Axis):
@@ -1028,7 +1036,7 @@ class BoundBox:
         if isinstance(obj, tuple):
             tmp.Update(*obj)
         elif isinstance(obj, Vector):
-            tmp.Update(*obj.to_tuple())
+            tmp.Update(*obj)
         elif isinstance(obj, BoundBox) and obj.wrapped is not None:
             tmp.Add(obj.wrapped)
 
@@ -1120,7 +1128,7 @@ class BoundBox:
 
     def to_align_offset(self, align: Align2DType | Align3DType) -> Vector:
         """Amount to move object to achieve the desired alignment"""
-        return to_align_offset(self.min.to_tuple(), self.max.to_tuple(), align)
+        return to_align_offset(self.min, self.max, align)
 
 
 class Color:
@@ -1733,8 +1741,8 @@ class Location:
 
         However, `build123d` requires all coordinate systems to be right-handed.
         Therefore, this implementation:
-            - Reflects the X and Z directions across the mirror plane
-            - Recomputes the Y direction as: `Y = X × Z`
+        - Reflects the X and Z directions across the mirror plane
+        - Recomputes the Y direction as: `Y = X × Z`
 
         This ensures the resulting Location maintains a valid right-handed frame,
         while remaining as close as possible to the geometric mirror.
@@ -2144,7 +2152,7 @@ class Rotation(Location):
             if tuples:
                 angles = list(*tuples)
             if vectors:
-                angles = vectors[0].to_tuple()
+                angles = tuple(vectors[0])
             if len(angles) < 3:
                 angles.extend([0.0] * (3 - len(angles)))
             rotations = list(filter(lambda item: isinstance(item, Rotation), args))
@@ -2716,9 +2724,9 @@ class Plane(metaclass=PlaneMeta):
         Returns:
             Plane as String
         """
-        origin_str = ", ".join(f"{v:.2f}" for v in self._origin.to_tuple())
-        x_dir_str = ", ".join(f"{v:.2f}" for v in self.x_dir.to_tuple())
-        z_dir_str = ", ".join(f"{v:.2f}" for v in self.z_dir.to_tuple())
+        origin_str = ", ".join(f"{v:.2f}" for v in tuple(self._origin))
+        x_dir_str = ", ".join(f"{v:.2f}" for v in tuple(self.x_dir))
+        z_dir_str = ", ".join(f"{v:.2f}" for v in tuple(self.z_dir))
         return f"Plane(o=({origin_str}), x=({x_dir_str}), z=({z_dir_str}))"
 
     def reverse(self) -> Plane:
@@ -2845,9 +2853,9 @@ class Plane(metaclass=PlaneMeta):
 
         global_coord_system = gp_Ax3()
         local_coord_system = gp_Ax3(
-            gp_Pnt(*self._origin.to_tuple()),
-            gp_Dir(*self.z_dir.to_tuple()),
-            gp_Dir(*self.x_dir.to_tuple()),
+            gp_Pnt(*self._origin),
+            gp_Dir(*self.z_dir),
+            gp_Dir(*self.x_dir),
         )
 
         forward_t.SetTransformation(global_coord_system, local_coord_system)
@@ -2901,8 +2909,8 @@ class Plane(metaclass=PlaneMeta):
             local_bottom_left = global_bottom_left.transform(transform_matrix)
             local_top_right = global_top_right.transform(transform_matrix)
             local_bbox = Bnd_Box(
-                gp_Pnt(*local_bottom_left.to_tuple()),
-                gp_Pnt(*local_top_right.to_tuple()),
+                gp_Pnt(*local_bottom_left),
+                gp_Pnt(*local_top_right),
             )
             return BoundBox(local_bbox)
         if hasattr(obj, "wrapped") and obj.wrapped is None:  # Empty shape

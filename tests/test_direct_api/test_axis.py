@@ -192,7 +192,7 @@ class TestAxis(unittest.TestCase):
         self.assertIsNone(Axis.X.intersect(Axis((0, 1, 1), (0, 0, 1))))
 
         intersection = Axis((1, 2, 3), (0, 0, 1)) & Plane.XY
-        self.assertAlmostEqual(intersection.to_tuple(), (1, 2, 0), 5)
+        self.assertAlmostEqual(intersection, (1, 2, 0), 5)
 
         arc = Edge.make_circle(20, start_angle=0, end_angle=180)
         ax0 = Axis((-20, 30, 0), (4, -3, 0))
@@ -226,10 +226,10 @@ class TestAxis(unittest.TestCase):
 
         # self.assertTrue(len(intersections.vertices(), 2))
         # np.testing.assert_allclose(
-        #     intersection.vertices()[0].to_tuple(), (-1, 0, 5), 5
+        #     intersection.vertices()[0], (-1, 0, 5), 5
         # )
         # np.testing.assert_allclose(
-        #     intersection.vertices()[1].to_tuple(), (1, 0, 5), 5
+        #     intersection.vertices()[1], (1, 0, 5), 5
         # )
 
     def test_axis_equal(self):

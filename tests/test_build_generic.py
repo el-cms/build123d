@@ -72,7 +72,7 @@ class AddTests(unittest.TestCase):
         # Add Edge
         with BuildLine() as test:
             add(Edge.make_line((0, 0, 0), (1, 1, 1)))
-        self.assertTupleAlmostEquals((test.wires()[0] @ 1).to_tuple(), (1, 1, 1), 5)
+        self.assertTupleAlmostEquals(test.wires()[0] @ 1, (1, 1, 1), 5)
         # Add Wire
         with BuildLine() as wire:
             Polyline((0, 0, 0), (1, 1, 1), (2, 0, 0), (3, 1, 1))
@@ -94,13 +94,11 @@ class AddTests(unittest.TestCase):
             add(Solid.make_box(10, 10, 10), rotation=(0, 0, 45))
         self.assertAlmostEqual(test.part.volume, 1000, 5)
         self.assertTupleAlmostEquals(
-            (
-                test.part.edges()
-                .group_by(Axis.Z)[-1]
-                .group_by(Axis.X)[-1]
-                .sort_by(Axis.Y)[0]
-                % 1
-            ).to_tuple(),
+            test.part.edges()
+            .group_by(Axis.Z)[-1]
+            .group_by(Axis.X)[-1]
+            .sort_by(Axis.Y)[0]
+            % 1,
             (sqrt(2) / 2, sqrt(2) / 2, 0),
             5,
         )
@@ -680,12 +678,12 @@ class ProjectionTests(unittest.TestCase):
 
     def test_project_point(self):
         pnt: Vector = project(Vector(1, 2, 3), Plane.XY)[0]
-        self.assertTupleAlmostEquals(pnt.to_tuple(), (1, 2, 0), 5)
+        self.assertTupleAlmostEquals(pnt, (1, 2, 0), 5)
         pnt: Vector = project(Vertex(1, 2, 3), Plane.XZ)[0]
-        self.assertTupleAlmostEquals(pnt.to_tuple(), (1, 3, 0), 5)
+        self.assertTupleAlmostEquals(pnt, (1, 3, 0), 5)
         with BuildSketch(Plane.YZ) as s1:
             pnt = project(Vertex(1, 2, 3), mode=Mode.PRIVATE)[0]
-            self.assertTupleAlmostEquals(pnt.to_tuple(), (2, 3, 0), 5)
+            self.assertTupleAlmostEquals(pnt, (2, 3, 0), 5)
 
     def test_multiple_results(self):
         with BuildLine() as l1:

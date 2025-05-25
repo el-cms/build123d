@@ -994,7 +994,7 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
             ) from err
         if surface_point_vectors:
             for point in surface_point_vectors:
-                surface.Add(gp_Pnt(*point.to_tuple()))
+                surface.Add(gp_Pnt(*point))
             try:
                 surface.Build()
                 surface_face = Face(surface.Shape())
@@ -1387,7 +1387,7 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
 
         """
         solid_classifier = BRepClass3d_SolidClassifier(self.wrapped)
-        solid_classifier.Perform(gp_Pnt(*Vector(point).to_tuple()), tolerance)
+        solid_classifier.Perform(gp_Pnt(*Vector(point)), tolerance)
         return solid_classifier.IsOnAFace()
 
         # surface = BRep_Tool.Surface_s(self.wrapped)

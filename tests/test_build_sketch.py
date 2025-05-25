@@ -92,9 +92,7 @@ class TestBuildSketch(unittest.TestCase):
             with BuildLine():
                 l1 = Line((0, 0), (10, 0))
                 Line(l1 @ 1, (10, 10))
-            self.assertTupleAlmostEquals(
-                (test.consolidate_edges() @ 1).to_tuple(), (10, 10, 0), 5
-            )
+            self.assertTupleAlmostEquals(test.consolidate_edges() @ 1, (10, 10, 0), 5)
 
     def test_mode_intersect(self):
         with BuildSketch() as test:
@@ -263,9 +261,7 @@ class TestBuildSketchObjects(unittest.TestCase):
         self.assertEqual(r.align, (Align.CENTER, Align.CENTER))
         self.assertEqual(r.mode, Mode.ADD)
         self.assertAlmostEqual(test.sketch.area, (3 * sqrt(3) / 2) * 2**2, 5)
-        self.assertTupleAlmostEquals(
-            test.sketch.faces()[0].normal_at().to_tuple(), (0, 0, 1), 5
-        )
+        self.assertTupleAlmostEquals(test.sketch.faces()[0].normal_at(), (0, 0, 1), 5)
         self.assertAlmostEqual(r.apothem, 2 * sqrt(3) / 2)
 
     def test_regular_polygon_minor_radius(self):
@@ -277,9 +273,7 @@ class TestBuildSketchObjects(unittest.TestCase):
         self.assertEqual(r.align, (Align.CENTER, Align.CENTER))
         self.assertEqual(r.mode, Mode.ADD)
         self.assertAlmostEqual(test.sketch.area, (3 * sqrt(3) / 4) * (0.5 * 2) ** 2, 5)
-        self.assertTupleAlmostEquals(
-            test.sketch.faces()[0].normal_at().to_tuple(), (0, 0, 1), 5
-        )
+        self.assertTupleAlmostEquals(test.sketch.faces()[0].normal_at(), (0, 0, 1), 5)
 
     def test_regular_polygon_align(self):
         with BuildSketch() as align:
@@ -303,7 +297,7 @@ class TestBuildSketchObjects(unittest.TestCase):
                 poly_pts = [Vector(v) for v in regular_poly.vertices()]
                 polar_pts = [p.position for p in PolarLocations(1, side_count)]
             for poly_pt, polar_pt in zip(poly_pts, polar_pts):
-                self.assertTupleAlmostEquals(poly_pt.to_tuple(), polar_pt.to_tuple(), 5)
+                self.assertTupleAlmostEquals(poly_pt, polar_pt, 5)
 
     def test_regular_polygon_min_sides(self):
         with self.assertRaises(ValueError):
@@ -325,8 +319,8 @@ class TestBuildSketchObjects(unittest.TestCase):
     def test_slot_center_point(self):
         with BuildSketch() as test:
             s = SlotCenterPoint((0, 0), (2, 0), 2)
-        self.assertTupleAlmostEquals(s.slot_center.to_tuple(), (0, 0, 0), 5)
-        self.assertTupleAlmostEquals(s.point.to_tuple(), (2, 0, 0), 5)
+        self.assertTupleAlmostEquals(s.slot_center, (0, 0, 0), 5)
+        self.assertTupleAlmostEquals(s.point, (2, 0, 0), 5)
         self.assertEqual(s.slot_height, 2)
         self.assertEqual(s.rotation, 0)
         self.assertEqual(s.mode, Mode.ADD)

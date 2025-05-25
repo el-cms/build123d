@@ -660,15 +660,15 @@ class Shape(NodeMixin, Generic[TOPODS]):
                 address = node.address
                 name = ""
                 loc = (
-                    "Center" + str(node.position.to_tuple())
+                    "Center" + str(tuple(node.position))
                     if show_center
-                    else "Position" + str(node.position.to_tuple())
+                    else "Position" + str(tuple(node.position))
                 )
             else:
                 address = id(node)
                 name = node.__class__.__name__.ljust(9)
                 loc = (
-                    "Center" + str(node.center().to_tuple())
+                    "Center" + str(tuple(node.center()))
                     if show_center
                     else "Location" + repr(node.location)
                 )

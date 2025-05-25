@@ -2635,7 +2635,7 @@ class Wire(Mixin1D, Shape[TopoDS_Wire]):
         for edge_index, edge in enumerate(edges):
             for i in range(fragments_per_edge):
                 param = i / (fragments_per_edge - 1)
-                points.append(edge.position_at(param).to_tuple()[:2])
+                points.append(tuple(edge.position_at(param))[:2])
                 points_lookup[edge_index * fragments_per_edge + i] = (edge_index, param)
 
         convex_hull = ConvexHull(points)
@@ -3029,13 +3029,13 @@ class Wire(Mixin1D, Shape[TopoDS_Wire]):
             projection_object = BRepProj_Projection(
                 self.wrapped,
                 target_object.wrapped,
-                gp_Dir(*direction_vector.to_tuple()),
+                gp_Dir(*direction_vector),
             )
         else:
             projection_object = BRepProj_Projection(
                 self.wrapped,
                 target_object.wrapped,
-                gp_Pnt(*center_point.to_tuple()),
+                gp_Pnt(*center_point),
             )
 
         # Generate a list of the projected wires with aligned orientation

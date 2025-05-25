@@ -317,8 +317,8 @@ class TestShape(unittest.TestCase):
         c0 = Edge.make_circle(1).locate(Location((0, 2.1, 0)))
         c1 = Edge.make_circle(1)
         closest = c0.closest_points(c1)
-        self.assertAlmostEqual(closest[0], c0.position_at(0.75).to_tuple(), 5)
-        self.assertAlmostEqual(closest[1], c1.position_at(0.25).to_tuple(), 5)
+        self.assertAlmostEqual(closest[0], c0.position_at(0.75), 5)
+        self.assertAlmostEqual(closest[1], c1.position_at(0.25), 5)
 
     def test_distance_to(self):
         c0 = Edge.make_circle(1).locate(Location((0, 2.1, 0)))

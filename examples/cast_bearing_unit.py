@@ -47,15 +47,8 @@ license:
 """
 
 # [Code]
-import copy
-
-from bd_warehouse.bearing import PressFitHole, SingleRowAngularContactBallBearing
-from bd_warehouse.fastener import ClearanceHole, SocketHeadCapScrew
 from build123d import *
 from ocp_vscode import show
-
-bearing = SingleRowAngularContactBallBearing("M17-47-14")
-screw = SocketHeadCapScrew("M10-1.5", length=30 * MM, simple=False)
 
 A, A1, Db2, H, J = 26, 11, 57, 98.5, 76.5
 with BuildPart() as oval_flanged_bearing_unit:
@@ -70,17 +63,11 @@ with BuildPart() as oval_flanged_bearing_unit:
     draft(drafted_faces, Plane.XY, 4)
     fillet(oval_flanged_bearing_unit.edges(), 1)
     with Locations(oval_flanged_bearing_unit.faces().sort_by(Axis.Z)[-1]):
-        PressFitHole(bearing)
-    with Locations(Pos(Z=A1)):
-        with Locations(*bolt_centers):
-            ClearanceHole(screw, counter_sunk=False)
+        CounterBoreHole(14 / 2, 47 / 2, 14)
+    with Locations(*bolt_centers):
+        Hole(5)
 
 oval_flanged_bearing_unit.part.color = Color(0x4C6377)
 
-# Create an assembly of all the positioned parts
-oval_flanged_bearing_unit_assembly = Compound(
-    children=[oval_flanged_bearing_unit.part, bearing.moved(bearing.hole_locations[0])]
-    + [copy.copy(screw).moved(l) for l in screw.hole_locations]
-)
-show(oval_flanged_bearing_unit_assembly)
+show(oval_flanged_bearing_unit)
 # [End]

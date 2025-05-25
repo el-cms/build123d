@@ -85,7 +85,7 @@ def draft(
         )
 
     # Check that all the faces are associated with the same Solid
-    topo_parents = set(f.topo_parent for f in face_list)
+    topo_parents = set(f.topo_parent for f in face_list if f.topo_parent is not None)
     if len(topo_parents) != 1:
         raise ValueError("All faces must share the same topological parent (a Solid)")
     parent_solids = next(iter(topo_parents)).solids()

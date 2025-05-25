@@ -155,6 +155,7 @@ operations_apply_to = {
     "add": ["BuildPart", "BuildSketch", "BuildLine"],
     "bounding_box": ["BuildPart", "BuildSketch", "BuildLine"],
     "chamfer": ["BuildPart", "BuildSketch", "BuildLine"],
+    "draft": ["BuildPart"],
     "extrude": ["BuildPart"],
     "fillet": ["BuildPart", "BuildSketch", "BuildLine"],
     "full_round": ["BuildSketch"],

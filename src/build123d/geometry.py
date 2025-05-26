@@ -1266,9 +1266,14 @@ class Color:
         self.iter_index += 1
         return value
 
-    # @deprecated
     def to_tuple(self):
         """Value as tuple"""
+        warnings.warn(
+            "to_tuple is deprecated and will be removed in a future version. "
+            "Use 'tuple(Color)' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return tuple(self)
 
     def __copy__(self) -> Color:
@@ -1332,7 +1337,7 @@ class GeomEncoder(json.JSONEncoder):
         if isinstance(o, Axis):
             return {"Axis": (tuple(o.position), tuple(o.direction))}
         if isinstance(o, Color):
-            return {"Color": o.to_tuple()}
+            return {"Color": tuple(o)}
         if isinstance(o, Location):
             return {"Location": o.to_tuple()}
         if isinstance(o, Plane):

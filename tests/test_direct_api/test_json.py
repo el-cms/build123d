@@ -52,7 +52,7 @@ class TestGeomEncode(unittest.TestCase):
 
         c_json = json.dumps(Color("red"), cls=GeomEncoder)
         color = json.loads(c_json, object_hook=GeomEncoder.geometry_hook)
-        self.assertEqual(Color("red").to_tuple(), color.to_tuple())
+        self.assertEqual(tuple(Color("red")), tuple(color))
 
         loc = Location((0, 1, 2), (4, 8, 16))
         l_json = json.dumps(loc, cls=GeomEncoder)

@@ -1345,7 +1345,8 @@ class GeomEncoder(json.JSONEncoder):
         if isinstance(o, Color):
             return {"Color": tuple(o)}
         if isinstance(o, Location):
-            return {"Location": o.to_tuple()}
+            tup = tuple(o)
+            return {f"Location": (tuple(tup[0]), tuple(tup[1]))}
         if isinstance(o, Plane):
             return {"Plane": (tuple(o.origin), tuple(o.x_dir), tuple(o.z_dir))}
         if isinstance(o, Vector):
@@ -1457,6 +1458,9 @@ class Location:
     def __init__(
         self, *args, **kwargs
     ):  # pylint: disable=too-many-branches, too-many-locals, too-many-statements
+
+        self.location_index = 0
+
         position = kwargs.pop("position", None)
         orientation = kwargs.pop("orientation", None)
         ordering = kwargs.pop("ordering", None)
@@ -1549,7 +1553,7 @@ class Location:
           Vector: Position part of Location
 
         """
-        return Vector(self.to_tuple()[0])
+        return Vector(tuple(self)[0])
 
     @position.setter
     def position(self, value: VectorLike):
@@ -1574,7 +1578,7 @@ class Location:
           Vector: orientation part of Location
 
         """
-        return Vector(self.to_tuple()[1])
+        return Vector(tuple(self)[1])
 
     @orientation.setter
     def orientation(self, rotation: VectorLike):
@@ -1726,6 +1730,30 @@ class Location:
             )
         )
 
+    def __iter__(self):
+        """Initialize to beginning"""
+        self.location_index = 0
+        return self
+
+    def __next__(self):
+        """return the next value"""
+        transformation = self.wrapped.Transformation()
+        trans = transformation.TranslationPart()
+        rot = transformation.GetRotation()
+        rv_trans: Vector = Vector(trans.X(), trans.Y(), trans.Z())
+        rv_rot: Vector = Vector(
+            degrees(a) for a in rot.GetEulerAngles(gp_EulerSequence.gp_Intrinsic_XYZ)
+        )  # type: ignore[assignment]
+        if self.location_index == 0:
+            self.location_index += 1
+            value = rv_trans
+        elif self.location_index == 1:
+            self.location_index += 1
+            value = rv_rot
+        else:
+            raise StopIteration
+        return value
+
     def __neg__(self) -> Location:
         """Flip the orientation without changing the position operator -"""
         return Location(-Plane(self))
@@ -1793,6 +1821,13 @@ class Location:
     def to_tuple(self) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
         """Convert the location to a translation, rotation tuple."""
 
+        warnings.warn(
+            "to_tuple is deprecated and will be removed in a future version. "
+            "Use 'tuple(Location)' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         transformation = self.wrapped.Transformation()
         trans = transformation.TranslationPart()
         rot = transformation.GetRotation()
@@ -1812,8 +1847,8 @@ class Location:
         Returns:
             Location as String
         """
-        position_str = ", ".join(f"{v:.2f}" for v in self.to_tuple()[0])
-        orientation_str = ", ".join(f"{v:.2f}" for v in self.to_tuple()[1])
+        position_str = ", ".join(f"{v:.2f}" for v in tuple(self)[0])
+        orientation_str = ", ".join(f"{v:.2f}" for v in tuple(self)[1])
         return f"(p=({position_str}), o=({orientation_str}))"
 
     def __str__(self):
@@ -1824,8 +1859,8 @@ class Location:
         Returns:
             Location as String
         """
-        position_str = ", ".join(f"{v:.2f}" for v in self.to_tuple()[0])
-        orientation_str = ", ".join(f"{v:.2f}" for v in self.to_tuple()[1])
+        position_str = ", ".join(f"{v:.2f}" for v in tuple(self)[0])
+        orientation_str = ", ".join(f"{v:.2f}" for v in tuple(self)[1])
         return f"Location: (position=({position_str}), orientation=({orientation_str}))"
 
     @overload

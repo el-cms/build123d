@@ -27,7 +27,6 @@ license:
 """
 
 import json
-import os
 import unittest
 from build123d.geometry import (
     Axis,

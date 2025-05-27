@@ -282,7 +282,7 @@ class TestLocations(unittest.TestCase):
     def test_no_centering(self):
         with BuildSketch():
             with GridLocations(4, 4, 2, 2, align=(Align.MIN, Align.MIN)) as l:
-                pts = [loc.to_tuple()[0] for loc in l.locations]
+                pts = [tuple(loc)[0] for loc in l.locations]
         self.assertTupleAlmostEquals(pts[0], (0, 0, 0), 5)
         self.assertTupleAlmostEquals(pts[1], (0, 4, 0), 5)
         self.assertTupleAlmostEquals(pts[2], (4, 0, 0), 5)
@@ -331,7 +331,7 @@ class TestLocations(unittest.TestCase):
     def test_centering(self):
         with BuildSketch():
             with GridLocations(4, 4, 2, 2, align=(Align.CENTER, Align.CENTER)) as l:
-                pts = [loc.to_tuple()[0] for loc in l.locations]
+                pts = [tuple(loc)[0] for loc in l.locations]
         self.assertTupleAlmostEquals(pts[0], (-2, -2, 0), 5)
         self.assertTupleAlmostEquals(pts[1], (-2, 2, 0), 5)
         self.assertTupleAlmostEquals(pts[2], (2, -2, 0), 5)
@@ -341,7 +341,7 @@ class TestLocations(unittest.TestCase):
         with BuildSketch():
             with Locations((-2, -2), (2, 2)):
                 with GridLocations(1, 1, 2, 2) as nested_grid:
-                    pts = [loc.to_tuple()[0] for loc in nested_grid.local_locations]
+                    pts = [tuple(loc)[0] for loc in nested_grid.local_locations]
         self.assertTupleAlmostEquals(pts[0], (-2.50, -2.50, 0.00), 5)
         self.assertTupleAlmostEquals(pts[1], (-2.50, -1.50, 0.00), 5)
         self.assertTupleAlmostEquals(pts[2], (-1.50, -2.50, 0.00), 5)
@@ -355,8 +355,8 @@ class TestLocations(unittest.TestCase):
         with BuildSketch():
             with PolarLocations(6, 3):
                 with GridLocations(1, 1, 2, 2) as polar_grid:
-                    pts = [loc.to_tuple()[0] for loc in polar_grid.local_locations]
-                    ort = [loc.to_tuple()[1] for loc in polar_grid.local_locations]
+                    pts = [tuple(loc)[0] for loc in polar_grid.local_locations]
+                    ort = [tuple(loc)[1] for loc in polar_grid.local_locations]
 
         self.assertTupleAlmostEquals(pts[0], (5.50, -0.50, 0.00), 2)
         self.assertTupleAlmostEquals(pts[1], (5.50, 0.50, 0.00), 2)

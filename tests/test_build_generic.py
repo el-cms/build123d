@@ -403,7 +403,7 @@ class LocationsTests(unittest.TestCase):
         with BuildPart():
             with Locations(Location(Vector())):
                 self.assertTupleAlmostEquals(
-                    LocationList._get_context().locations[0].to_tuple()[0], (0, 0, 0), 5
+                    tuple(LocationList._get_context().locations[0])[0], (0, 0, 0), 5
                 )
 
     def test_errors(self):

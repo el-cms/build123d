@@ -1623,6 +1623,12 @@ class Shape(NodeMixin, Generic[TOPODS]):
         Args:
             loc (Location): new location to set for self
         """
+        warnings.warn(
+            "The 'relocate' method is deprecated and will be removed in a future version."
+            "Use move, moved, locate, or located instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if self.wrapped is None:
             raise ValueError("Cannot relocate an empty shape")
         if loc.wrapped is None:

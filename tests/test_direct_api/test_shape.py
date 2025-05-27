@@ -347,19 +347,19 @@ class TestShape(unittest.TestCase):
         obj = Solid()
         self.assertIs(obj, obj.clean())
 
-    def test_relocate(self):
-        box = Solid.make_box(10, 10, 10).move(Location((20, -5, -5)))
-        cylinder = Solid.make_cylinder(2, 50).move(Location((0, 0, 0), (0, 90, 0)))
+    # def test_relocate(self):
+    #     box = Solid.make_box(10, 10, 10).move(Location((20, -5, -5)))
+    #     cylinder = Solid.make_cylinder(2, 50).move(Location((0, 0, 0), (0, 90, 0)))
 
-        box_with_hole = box.cut(cylinder)
-        box_with_hole.relocate(box.location)
+    #     box_with_hole = box.cut(cylinder)
+    #     box_with_hole.relocate(box.location)
 
-        self.assertEqual(box.location, box_with_hole.location)
+    #     self.assertEqual(box.location, box_with_hole.location)
 
-        bbox1 = box.bounding_box()
-        bbox2 = box_with_hole.bounding_box()
-        self.assertAlmostEqual(bbox1.min, bbox2.min, 5)
-        self.assertAlmostEqual(bbox1.max, bbox2.max, 5)
+    #     bbox1 = box.bounding_box()
+    #     bbox2 = box_with_hole.bounding_box()
+    #     self.assertAlmostEqual(bbox1.min, bbox2.min, 5)
+    #     self.assertAlmostEqual(bbox1.max, bbox2.max, 5)
 
     def test_project_to_viewport(self):
         # Basic test
@@ -560,10 +560,10 @@ class TestShape(unittest.TestCase):
             empty.moved(Location())
         with self.assertRaises(ValueError):
             box.moved(empty_loc)
-        with self.assertRaises(ValueError):
-            empty.relocate(Location())
-        with self.assertRaises(ValueError):
-            box.relocate(empty_loc)
+        # with self.assertRaises(ValueError):
+        #     empty.relocate(Location())
+        # with self.assertRaises(ValueError):
+        #     box.relocate(empty_loc)
         with self.assertRaises(ValueError):
             empty.distance_to(Vector(1, 1, 1))
         with self.assertRaises(ValueError):

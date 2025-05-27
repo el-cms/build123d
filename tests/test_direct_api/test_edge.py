@@ -37,7 +37,7 @@ from build123d.geometry import Axis, Plane, Vector
 from build123d.objects_curve import CenterArc, EllipticalCenterArc
 from build123d.objects_sketch import Circle, Rectangle, RegularPolygon
 from build123d.operations_generic import sweep
-from build123d.topology import Edge, Face
+from build123d.topology import Edge, Face, Wire
 from OCP.GeomProjLib import GeomProjLib
 
 
@@ -122,7 +122,7 @@ class TestEdge(unittest.TestCase):
         for end in [0, 1]:
             self.assertAlmostEqual(
                 edge.position_at(end),
-                edge.to_wire().position_at(end),
+                Wire(edge).position_at(end),
                 5,
             )
 

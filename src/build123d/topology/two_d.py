@@ -1627,12 +1627,21 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
 
         Approximate planar face with arcs and straight line segments.
 
+        This is a utility used internally to convert or adapt a face for Boolean operations. Its
+        purpose is not typically for general use, but rather as a helper within the Boolean kernel
+        to ensure input faces are in a compatible and canonical form.
+
         Args:
             tolerance (float, optional): Approximation tolerance. Defaults to 1e-3.
 
         Returns:
             Face: approximated face
         """
+        warnings.warn(
+            "The 'to_arcs' method is deprecated and will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if self.wrapped is None:
             raise ValueError("Cannot approximate an empty shape")
 

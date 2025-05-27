@@ -1916,7 +1916,9 @@ class Shape(NodeMixin, Generic[TOPODS]):
     ) -> Self:
         """to_splines
 
-        Approximate shape with b-splines of the specified degree.
+        A shape-processing utility that forces all geometry in a shape to be converted into
+        BSplines. It's useful when working with tools or export formats that require uniform
+        geometry, or for downstream processing that only understands BSpline representations.
 
         Args:
             degree (int, optional): Maximum degree. Defaults to 3.

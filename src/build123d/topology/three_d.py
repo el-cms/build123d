@@ -665,7 +665,7 @@ class Solid(Mixin3D, Shape[TopoDS_Solid]):
             builder.SetMode(coordinate_system)
             rotate = True
         elif isinstance(binormal, (Wire, Edge)):
-            builder.SetMode(binormal.to_wire().wrapped, True)
+            builder.SetMode(Wire(binormal).wrapped, True)
 
         return rotate
 
@@ -1271,7 +1271,7 @@ class Solid(Mixin3D, Shape[TopoDS_Solid]):
 
         shapes = []
         for wire in [outer_wire] + inner_wires:
-            builder = BRepOffsetAPI_MakePipeShell(path.to_wire().wrapped)
+            builder = BRepOffsetAPI_MakePipeShell(Wire(path).wrapped)
 
             rotate = False
 
@@ -1339,7 +1339,7 @@ class Solid(Mixin3D, Shape[TopoDS_Solid]):
         Returns:
             Solid: swept object
         """
-        path_as_wire = path.to_wire().wrapped
+        path_as_wire = Wire(path).wrapped
 
         builder = BRepOffsetAPI_MakePipeShell(path_as_wire)
 

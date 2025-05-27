@@ -183,7 +183,7 @@ class TestFace(unittest.TestCase):
         happy = Face(outer, inners)
         self.assertAlmostEqual(happy.area, math.pi * (10**2 - 2), 5)
 
-        outer = Edge.make_circle(10, end_angle=180).to_wire()
+        outer = Wire(Edge.make_circle(10, end_angle=180))
         with self.assertRaises(ValueError):
             Face(outer, inners)
         with self.assertRaises(ValueError):
@@ -192,7 +192,7 @@ class TestFace(unittest.TestCase):
         outer = Wire.make_circle(10)
         inners = [
             Wire.make_circle(1).locate(Location((-2, 2, 0))),
-            Edge.make_circle(1, end_angle=180).to_wire().locate(Location((2, 2, 0))),
+            Wire(Edge.make_circle(1, end_angle=180)).locate(Location((2, 2, 0))),
         ]
         with self.assertRaises(ValueError):
             Face(outer, inners)
@@ -423,15 +423,15 @@ class TestFace(unittest.TestCase):
         with self.assertRaises(ValueError):
             Face.sweep(edge, Polyline((0, 0), (0.1, 0), (0.2, 0.1)))
 
-    def test_to_arcs(self):
-        with BuildSketch() as bs:
-            with BuildLine() as bl:
-                Polyline((0, 0), (1, 0), (1.5, 0.5), (2, 0), (2, 1), (0, 1), (0, 0))
-                fillet(bl.vertices(), radius=0.1)
-            make_face()
-        smooth = bs.faces()[0]
-        fragmented = smooth.to_arcs()
-        self.assertLess(len(smooth.edges()), len(fragmented.edges()))
+    # def test_to_arcs(self):
+    #     with BuildSketch() as bs:
+    #         with BuildLine() as bl:
+    #             Polyline((0, 0), (1, 0), (1.5, 0.5), (2, 0), (2, 1), (0, 1), (0, 0))
+    #             fillet(bl.vertices(), radius=0.1)
+    #         make_face()
+    #     smooth = bs.faces()[0]
+    #     fragmented = smooth.to_arcs()
+    #     self.assertLess(len(smooth.edges()), len(fragmented.edges()))
 
     def test_outer_wire(self):
         face = (Face.make_rect(1, 1) - Face.make_rect(0.5, 0.5)).face()

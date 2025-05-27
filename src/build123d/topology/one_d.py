@@ -2231,6 +2231,12 @@ class Edge(Mixin1D, Shape[TopoDS_Edge]):
 
     def to_wire(self) -> Wire:
         """Edge as Wire"""
+        warnings.warn(
+            "to_wire is deprecated and will be removed in a future version. "
+            "Use 'Wire(Edge)' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return Wire([self])
 
     def trim(self, start: float, end: float) -> Edge:
@@ -3106,6 +3112,12 @@ class Wire(Mixin1D, Shape[TopoDS_Wire]):
 
     def to_wire(self) -> Wire:
         """Return Wire - used as a pair with Edge.to_wire when self is Wire | Edge"""
+        warnings.warn(
+            "to_wire is deprecated and will be removed in a future version. "
+            "Use 'Wire(Wire)' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self
 
     def trim(self: Wire, start: float, end: float) -> Wire:

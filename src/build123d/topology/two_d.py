@@ -343,7 +343,7 @@ class Mixin2D(Shape):
             # The start point isn't at the surface_loc so wrap a line to find it
             to_start_edge = Edge.make_line((0, 0), planar_edge @ 0)
             wrapped_to_start_edge = self._wrap_edge(
-                to_start_edge, surface_loc, snap_to_face=True
+                to_start_edge, surface_loc, snap_to_face=True, tolerance=tolerance
             )
             start_pnt = wrapped_to_start_edge @ 1
             _, start_normal = _intersect_surface_normal(

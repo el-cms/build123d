@@ -58,18 +58,18 @@ from __future__ import annotations
 import copy
 import sys
 import warnings
-from typing import Any, overload, TypeVar, TYPE_CHECKING
-
+from abc import ABC, abstractmethod
 from collections.abc import Iterable, Sequence
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 import OCP.TopAbs as ta
-from OCP.BRep import BRep_Tool, BRep_Builder
+from OCP.BRep import BRep_Builder, BRep_Tool
 from OCP.BRepAdaptor import BRepAdaptor_Surface
 from OCP.BRepAlgo import BRepAlgo
 from OCP.BRepAlgoAPI import BRepAlgoAPI_Common
 from OCP.BRepBuilderAPI import (
-    BRepBuilderAPI_MakeFace,
     BRepBuilderAPI_MakeEdge,
+    BRepBuilderAPI_MakeFace,
     BRepBuilderAPI_MakeWire,
 )
 from OCP.BRepClass3d import BRepClass3d_SolidClassifier
@@ -80,30 +80,31 @@ from OCP.BRepIntCurveSurface import BRepIntCurveSurface_Inter
 from OCP.BRepOffsetAPI import BRepOffsetAPI_MakeFilling, BRepOffsetAPI_MakePipeShell
 from OCP.BRepPrimAPI import BRepPrimAPI_MakeRevol
 from OCP.BRepTools import BRepTools, BRepTools_ReShape
-from OCP.GProp import GProp_GProps
-from OCP.Geom import Geom_BezierSurface, Geom_Surface, Geom_RectangularTrimmedSurface
+from OCP.gce import gce_MakeLin
+from OCP.Geom import Geom_BezierSurface, Geom_RectangularTrimmedSurface, Geom_Surface
+from OCP.GeomAbs import GeomAbs_C0
 from OCP.GeomAPI import (
     GeomAPI_ExtremaCurveCurve,
     GeomAPI_PointsToBSplineSurface,
     GeomAPI_ProjectPointOnSurf,
 )
-from OCP.GeomAbs import GeomAbs_C0
 from OCP.GeomProjLib import GeomProjLib
+from OCP.gp import gp_Pnt, gp_Vec
+from OCP.GProp import GProp_GProps
 from OCP.Precision import Precision
 from OCP.ShapeFix import ShapeFix_Solid, ShapeFix_Wire
 from OCP.Standard import (
+    Standard_ConstructionError,
     Standard_Failure,
     Standard_NoSuchObject,
-    Standard_ConstructionError,
 )
 from OCP.StdFail import StdFail_NotDone
-from OCP.TColStd import TColStd_HArray2OfReal
 from OCP.TColgp import TColgp_HArray2OfPnt
+from OCP.TColStd import TColStd_HArray2OfReal
 from OCP.TopExp import TopExp
-from OCP.TopTools import TopTools_IndexedDataMapOfShapeListOfShape, TopTools_ListOfShape
 from OCP.TopoDS import TopoDS, TopoDS_Face, TopoDS_Shape, TopoDS_Shell, TopoDS_Solid
-from OCP.gce import gce_MakeLin
-from OCP.gp import gp_Pnt, gp_Vec
+from OCP.TopTools import TopTools_IndexedDataMapOfShapeListOfShape, TopTools_ListOfShape
+from typing_extensions import Self
 
 from build123d.build_enums import CenterOf, GeomType, Keep, SortBy, Transition
 from build123d.geometry import (
@@ -117,38 +118,36 @@ from build123d.geometry import (
     Vector,
     VectorLike,
 )
-from typing_extensions import Self
 
-from .one_d import Mixin1D, Edge, Wire
+from .one_d import Edge, Mixin1D, Wire
 from .shape_core import (
     Shape,
     ShapeList,
     SkipClean,
-    downcast,
-    get_top_level_topods_shapes,
     _sew_topods_faces,
-    shapetype,
     _topods_entities,
     _topods_face_normal_at,
+    downcast,
+    get_top_level_topods_shapes,
+    shapetype,
 )
 from .utils import (
     _extrude_topods_shape,
-    find_max_dimension,
     _make_loft,
     _make_topods_face_from_wires,
     _topods_bool_op,
+    find_max_dimension,
 )
 from .zero_d import Vertex
 
-
 if TYPE_CHECKING:  # pragma: no cover
-    from .three_d import Solid  # pylint: disable=R0801
     from .composite import Compound, Curve  # pylint: disable=R0801
+    from .three_d import Solid  # pylint: disable=R0801
 
 T = TypeVar("T", Edge, Wire, "Face")
 
 
-class Mixin2D(Shape):
+class Mixin2D(ABC, Shape):
     """Additional methods to add to Face and Shell class"""
 
     project_to_viewport = Mixin1D.project_to_viewport
@@ -257,6 +256,11 @@ class Mixin2D(Shape):
             result.append((pnt, normal))
 
         return result
+
+    @abstractmethod
+    def location_at(self, *args: Any, **kwargs: Any) -> Location:
+        """A location from a face or shell"""
+        pass
 
     def offset(self, amount: float) -> Self:
         """Return a copy of self moved along the normal by amount"""

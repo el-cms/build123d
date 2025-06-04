@@ -521,14 +521,17 @@ class SlotOverall(BaseSketchObject):
         self.width = width
         self.slot_height = height
 
-        face = Face(
-            Wire(
-                [
-                    Edge.make_line(Vector(-width / 2 + height / 2, 0, 0), Vector()),
-                    Edge.make_line(Vector(), Vector(+width / 2 - height / 2, 0, 0)),
-                ]
-            ).offset_2d(height / 2)
-        )
+        if width != height:
+            face = Face(
+                Wire(
+                    [
+                        Edge.make_line(Vector(-width / 2 + height / 2, 0, 0), Vector()),
+                        Edge.make_line(Vector(), Vector(+width / 2 - height / 2, 0, 0)),
+                    ]
+                ).offset_2d(height / 2)
+            )
+        else:
+            face = cast(Face, Circle(width / 2, mode=mode).face())
         super().__init__(face, rotation, align, mode)
 
 

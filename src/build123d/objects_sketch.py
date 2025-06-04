@@ -464,7 +464,7 @@ class SlotCenterToCenter(BaseSketchObject):
         rotation: float = 0,
         mode: Mode = Mode.ADD,
     ):
-        if center_separation <= 0:
+        if center_separation < 0:
             raise ValueError(
                 f"Requires center_separation > 0. Got: {center_separation=}"
             )
@@ -475,14 +475,18 @@ class SlotCenterToCenter(BaseSketchObject):
         self.center_separation = center_separation
         self.slot_height = height
 
-        face = Face(
-            Wire(
-                [
-                    Edge.make_line(Vector(-center_separation / 2, 0, 0), Vector()),
-                    Edge.make_line(Vector(), Vector(+center_separation / 2, 0, 0)),
-                ]
-            ).offset_2d(height / 2)
-        )
+        if center_separation > 0:
+            face = Face(
+                Wire(
+                    [
+                        Edge.make_line(Vector(-center_separation / 2, 0, 0), Vector()),
+                        Edge.make_line(Vector(), Vector(+center_separation / 2, 0, 0)),
+                    ]
+                ).offset_2d(height / 2)
+            )
+        else:
+            face = cast(Face, Circle(height / 2, mode=mode).face())
+
         super().__init__(face, rotation, None, mode)
 
 
@@ -510,7 +514,7 @@ class SlotOverall(BaseSketchObject):
         align: Align | tuple[Align, Align] | None = (Align.CENTER, Align.CENTER),
         mode: Mode = Mode.ADD,
     ):
-        if width <= height:
+        if width < height:
             raise ValueError(
                 f"Slot requires that width > height. Got: {width=}, {height=}"
             )
@@ -521,7 +525,7 @@ class SlotOverall(BaseSketchObject):
         self.width = width
         self.slot_height = height
 
-        if width != height:
+        if width > height:
             face = Face(
                 Wire(
                     [
@@ -532,6 +536,7 @@ class SlotOverall(BaseSketchObject):
             )
         else:
             face = cast(Face, Circle(width / 2, mode=mode).face())
+
         super().__init__(face, rotation, align, mode)
 
 

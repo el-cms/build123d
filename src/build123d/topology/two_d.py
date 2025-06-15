@@ -1383,8 +1383,10 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
     def inner_wires(self) -> ShapeList[Wire]:
         """Extract the inner or hole wires from this Face"""
         outer = self.outer_wire()
-
-        return ShapeList([w for w in self.wires() if not w.is_same(outer)])
+        inners = [w for w in self.wires() if not w.is_same(outer)]
+        for w in inners:
+            w.topo_parent = self if self.topo_parent is None else self.topo_parent
+        return ShapeList(inners)
 
     def is_coplanar(self, plane: Plane) -> bool:
         """Is this planar face coplanar with the provided plane"""
@@ -1654,7 +1656,9 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
 
     def outer_wire(self) -> Wire:
         """Extract the perimeter wire from this Face"""
-        return Wire(BRepTools.OuterWire_s(self.wrapped))
+        outer = Wire(BRepTools.OuterWire_s(self.wrapped))
+        outer.topo_parent = self if self.topo_parent is None else self.topo_parent
+        return outer
 
     def position_at(self, u: float, v: float) -> Vector:
         """position_at

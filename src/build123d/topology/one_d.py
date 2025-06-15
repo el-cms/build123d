@@ -493,7 +493,11 @@ class Mixin1D(Shape):
 
             edge_list: ShapeList[Edge] = ShapeList()
             while explorer.More():
-                edge_list.append(Edge(explorer.Current()))
+                next_edge = Edge(explorer.Current())
+                next_edge.topo_parent = (
+                    self if self.topo_parent is None else self.topo_parent
+                )
+                edge_list.append(next_edge)
                 explorer.Next()
             return edge_list
         else:

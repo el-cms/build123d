@@ -779,9 +779,9 @@ class PolarLine(BaseEdgeObject):
         if length_mode == LengthMode.DIAGONAL:
             length_vector = direction_localized * length
         elif length_mode == LengthMode.HORIZONTAL:
-            length_vector = direction_localized * (length / cos(radians(angle)))
+            length_vector = direction_localized * abs(length / cos(radians(angle)))
         elif length_mode == LengthMode.VERTICAL:
-            length_vector = direction_localized * (length / sin(radians(angle)))
+            length_vector = direction_localized * abs(length / sin(radians(angle)))
 
         new_edge = Edge.make_line(start, start + length_vector)
 

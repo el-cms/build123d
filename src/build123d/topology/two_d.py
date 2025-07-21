@@ -1169,7 +1169,11 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
     @classmethod
     def make_surface_patch(
         cls,
-        constraints: Iterable[tuple[Edge, Face, ContinuityLevel] | Edge | VectorLike],
+        edge_face_constraints: (
+            Iterable[tuple[Edge, Face, ContinuityLevel]] | None
+        ) = None,
+        edge_constraints: Iterable[Edge] | None = None,
+        point_constraints: Iterable[VectorLike] | None = None,
     ) -> Face:
         continuity_dict = {
             ContinuityLevel.C0: GeomAbs_C0,
@@ -1177,21 +1181,22 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
             ContinuityLevel.C2: GeomAbs_G2,
         }
         patch = BRepOffsetAPI_MakeFilling()
-        for constraint in constraints:
-            if isinstance(constraint, (Vector, Sequence)) and not isinstance(
-                constraint, tuple
-            ):
-                patch.Add(gp_Pnt(*constraint))
-            elif isinstance(constraint, Edge):
-                patch.Add(constraint.wrapped, continuity_dict[ContinuityLevel.C0])
-            elif len(constraint) == 3:
+
+        if edge_face_constraints:
+            for constraint in edge_face_constraints:
                 patch.Add(
                     constraint[0].wrapped,
                     constraint[1].wrapped,
                     continuity_dict[constraint[2]],
                 )
-            else:
-                raise ValueError(f"Provided {constraint} is not an allowed constraint")
+        if edge_constraints:
+            for edge in edge_constraints:
+                patch.Add(edge.wrapped, continuity_dict[ContinuityLevel.C0])
+
+        if point_constraints:
+            for point in point_constraints:
+                patch.Add(gp_Pnt(*point))
+
         patch.Build()
         result = patch.Shape()
 

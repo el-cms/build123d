@@ -35,7 +35,7 @@ import unittest
 from unittest.mock import patch, PropertyMock
 from OCP.Geom import Geom_RectangularTrimmedSurface
 from build123d.build_common import Locations, PolarLocations
-from build123d.build_enums import Align, CenterOf, GeomType
+from build123d.build_enums import Align, CenterOf, ContinuityLevel, GeomType
 from build123d.build_line import BuildLine
 from build123d.build_part import BuildPart
 from build123d.build_sketch import BuildSketch
@@ -429,6 +429,63 @@ class TestFace(unittest.TestCase):
         self.assertAlmostEqual(circle_with_hole.area, math.pi * (2**2 - 1**1), 5)
         with self.assertRaises(ValueError):
             Face.sweep(edge, Polyline((0, 0), (0.1, 0), (0.2, 0.1)))
+
+    def test_make_surface_patch(self):
+        m1 = Spline((0, 0), (1, 0), (10, 0, -10))
+        m2 = Spline((0, 0), (0, 1), (0, 10, -10))
+        m3 = Spline(m1 @ 1, (7, 7, -10), m2 @ 1)
+
+        patch = Face.make_surface_patch(
+            edge_constraints=[
+                m1.edge(),
+                m2.edge(),
+                m3.edge(),
+            ]
+        )
+        self.assertAlmostEqual(patch.area, 157.186, 3)
+
+        f1 = Face.extrude(m1.edge(), (0, -1, 0))
+        f2 = Face.extrude(m2.edge(), (-1, 0, 0))
+        f3 = Face.extrude(m3.edge(), (0, 0, -1))
+
+        patch2 = Face.make_surface_patch(
+            edge_face_constraints=[
+                (m1.edge(), f1, ContinuityLevel.C1),
+                (m2.edge(), f2, ContinuityLevel.C1),
+                (m3.edge(), f3, ContinuityLevel.C1),
+            ]
+        )
+
+        self.assertAlmostEqual(patch2.area, 152.670, 3)
+
+        mid_edge = Spline(m1 @ 0.5, (5, 5, -3), m2 @ 0.5)
+
+        patch3 = -Face.make_surface_patch(
+            edge_face_constraints=[
+                (m1.edge(), f1, ContinuityLevel.C1),
+                (m2.edge(), f2, ContinuityLevel.C1),
+                (m3.edge(), f3, ContinuityLevel.C1),
+            ],
+            edge_constraints=[
+                mid_edge.edge(),
+            ],
+        )
+
+        self.assertAlmostEqual(patch3.area, 152.643, 3)
+
+        point = patch.position_at(0.5, 0.5) + (0.5, 0.5)
+        patch4 = -Face.make_surface_patch(
+            edge_constraints=[
+                m1.edge(),
+                m2.edge(),
+                m3.edge(),
+            ],
+            point_constraints=[
+                point,
+            ],
+        )
+
+        self.assertAlmostEqual(patch4.area, 164.618, 3)
 
     # def test_to_arcs(self):
     #     with BuildSketch() as bs:

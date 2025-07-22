@@ -82,7 +82,7 @@ from OCP.BRepPrimAPI import BRepPrimAPI_MakeRevol
 from OCP.BRepTools import BRepTools, BRepTools_ReShape
 from OCP.gce import gce_MakeLin
 from OCP.Geom import Geom_BezierSurface, Geom_RectangularTrimmedSurface, Geom_Surface
-from OCP.GeomAbs import GeomAbs_C0
+from OCP.GeomAbs import GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
 from OCP.GeomAPI import (
     GeomAPI_ExtremaCurveCurve,
     GeomAPI_PointsToBSplineSurface,
@@ -106,7 +106,14 @@ from OCP.TopoDS import TopoDS, TopoDS_Face, TopoDS_Shape, TopoDS_Shell, TopoDS_S
 from OCP.TopTools import TopTools_IndexedDataMapOfShapeListOfShape, TopTools_ListOfShape
 from typing_extensions import Self
 
-from build123d.build_enums import CenterOf, GeomType, Keep, SortBy, Transition
+from build123d.build_enums import (
+    CenterOf,
+    ContinuityLevel,
+    GeomType,
+    Keep,
+    SortBy,
+    Transition,
+)
 from build123d.geometry import (
     DEG2RAD,
     TOLERANCE,
@@ -1158,6 +1165,42 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         else:
             return_value = cls.cast(BRepFill.Face_s(curve1.wrapped, curve2.wrapped))
         return return_value
+
+    @classmethod
+    def make_surface_patch(
+        cls,
+        edge_face_constraints: (
+            Iterable[tuple[Edge, Face, ContinuityLevel]] | None
+        ) = None,
+        edge_constraints: Iterable[Edge] | None = None,
+        point_constraints: Iterable[VectorLike] | None = None,
+    ) -> Face:
+        continuity_dict = {
+            ContinuityLevel.C0: GeomAbs_C0,
+            ContinuityLevel.C1: GeomAbs_G1,
+            ContinuityLevel.C2: GeomAbs_G2,
+        }
+        patch = BRepOffsetAPI_MakeFilling()
+
+        if edge_face_constraints:
+            for constraint in edge_face_constraints:
+                patch.Add(
+                    constraint[0].wrapped,
+                    constraint[1].wrapped,
+                    continuity_dict[constraint[2]],
+                )
+        if edge_constraints:
+            for edge in edge_constraints:
+                patch.Add(edge.wrapped, continuity_dict[ContinuityLevel.C0])
+
+        if point_constraints:
+            for point in point_constraints:
+                patch.Add(gp_Pnt(*point))
+
+        patch.Build()
+        result = patch.Shape()
+
+        return cls(result)
 
     @classmethod
     def revolve(

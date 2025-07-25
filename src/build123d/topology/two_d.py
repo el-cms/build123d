@@ -1175,6 +1175,28 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
         edge_constraints: Iterable[Edge] | None = None,
         point_constraints: Iterable[VectorLike] | None = None,
     ) -> Face:
+        """make_surface_patch
+
+        Create a potentially non-planar face patch bounded by exterior edges which can
+        be optionally refined using support faces to ensure e.g. tangent surface
+        continuity. Also can optionally refine the surface using surface points.
+
+        Args:
+            edge_face_constraints (list[tuple[Edge, Face, ContinuityLevel]], optional):
+                Edges defining perimeter of face with adjacent support faces subject to
+                ContinuityLevel. Defaults to None.
+            edge_constraints (list[Edge], optional): Edges defining perimeter of face
+                without adjacent support faces. Defaults to None.
+            point_constraints (list[VectorLike], optional): Points on the surface that
+                refine the shape. Defaults to None.
+
+        Raises:
+            RuntimeError: Error building non-planar face with provided constraints
+            RuntimeError: Generated face is invalid
+
+        Returns:
+            Face: Potentially non-planar face
+        """
         continuity_dict = {
             ContinuityLevel.C0: GeomAbs_C0,
             ContinuityLevel.C1: GeomAbs_G1,
@@ -1197,10 +1219,24 @@ class Face(Mixin2D, Shape[TopoDS_Face]):
             for point in point_constraints:
                 patch.Add(gp_Pnt(*point))
 
-        patch.Build()
-        result = patch.Shape()
+        try:
+            patch.Build()
+            result = cls(patch.Shape())
+        except (
+            Standard_Failure,
+            StdFail_NotDone,
+            Standard_NoSuchObject,
+            Standard_ConstructionError,
+        ) as err:
+            raise RuntimeError(
+                "Error building non-planar face with provided constraints"
+            ) from err
 
-        return cls(result)
+        result = result.fix()
+        if not result.is_valid or result.wrapped is None:
+            raise RuntimeError("Non planar face is invalid")
+
+        return result
 
     @classmethod
     def revolve(

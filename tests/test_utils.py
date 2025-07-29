@@ -17,6 +17,16 @@ from build123d.utils import FontInfo
 class TestFontHelpers(unittest.TestCase):
     """Tests for font helpers."""
 
+    def test_font_info(self):
+        """Test expected FontInfo repr."""
+        name = "Arial"
+        styles = tuple(member for member in FontStyle)
+        font = FontInfo(name, styles)
+
+        self.assertEqual(
+            repr(font), f"Font(name={name!r}, styles={tuple(s.name for s in styles)})"
+        )
+
     def test_available_fonts(self):
         """Test expected output for available fonts."""
         fonts = available_fonts()

@@ -45,7 +45,7 @@ from build123d.build_enums import (
 )
 from build123d.build_line import BuildLine
 from build123d.geometry import Axis, Plane, Vector, VectorLike, TOLERANCE
-from build123d.topology import Edge, Face, Wire, Curve
+from build123d.topology import Edge, Face, Wire, Curve, tuplify
 from build123d.topology.shape_core import ShapeList
 
 
@@ -1394,9 +1394,10 @@ class ArcArcTangentArc(BaseEdgeObject):
         end_arc: Curve | Edge | Wire,
         radius: float,
         side: Side = Side.LEFT,
-        keep: Keep = Keep.INSIDE,
+        keep: Keep | tuple[Keep, Keep] = (Keep.INSIDE, Keep.OUTSIDE),
         mode: Mode = Mode.ADD,
     ):
+        keep_type, keep_placement = tuplify(keep, 2)
 
         context: BuildLine | None = BuildLine._get_context(self)
         validate_inputs(context, self)
@@ -1418,7 +1419,7 @@ class ArcArcTangentArc(BaseEdgeObject):
             workplane = copy_module.copy(WorkplaneList._get_context().workplanes[0])
 
         side_sign = 1 if side == Side.LEFT else -1
-        keep_sign = 1 if keep == Keep.INSIDE else -1
+        keep_sign = 1 if keep_type == Keep.INSIDE else -1
         arcs = [start_arc, end_arc]
         points = [arc.arc_center for arc in arcs]
         radii = [arc.radius for arc in arcs]
@@ -1436,7 +1437,13 @@ class ArcArcTangentArc(BaseEdgeObject):
         # The range midline.length / 2 < tangent radius < math.inf should be valid
         # Sometimes fails if min_radius == radius, so using >=
         min_radius = (midline.length - keep_sign * (radii[0] + radii[1])) / 2
-        if min_radius >= radius:
+        if keep_placement == Keep.OUTSIDE and min_radius >= radius:
+            raise ValueError(
+                f"The arc radius is too small. Should be greater than {min_radius}."
+            )
+
+        min_radius = (midline.length + keep_sign * (radii[0] - radii[1])) / 2
+        if keep_placement == Keep.INSIDE and min_radius >= radius:
             raise ValueError(
                 f"The arc radius is too small. Should be greater than {min_radius}."
             )
@@ -1450,12 +1457,23 @@ class ArcArcTangentArc(BaseEdgeObject):
         # - then it's a matter of finding the points where the connecting lines
         #   intersect the point circles
         local = [workplane.to_local_coords(p) for p in points]
-        ref_circles = [
-            sympy.Circle(
-                sympy.Point(local[i].X, local[i].Y), keep_sign * radii[i] + radius
-            )
-            for i in range(len(arcs))
-        ]
+        if keep_placement == Keep.OUTSIDE:
+            ref_circles = [
+                sympy.Circle(
+                    sympy.Point(local[i].X, local[i].Y), keep_sign * radii[i] + radius
+                )
+                for i in range(len(arcs))
+            ]
+        else:
+            ref_circles = [
+                sympy.Circle(
+                    sympy.Point(local[0].X, local[0].Y), abs(radii[0] - keep_sign * radius)
+                ),
+                sympy.Circle(
+                    sympy.Point(local[1].X, local[1].Y), abs(radii[1] + keep_sign * radius)
+                )
+            ]
+
         ref_intersections = ShapeList(
             [
                 workplane.from_local_coords(
@@ -1466,9 +1484,14 @@ class ArcArcTangentArc(BaseEdgeObject):
         )
         arc_center = ref_intersections.sort_by(Axis(points[0], normal))[0]
 
+        if keep_placement == Keep.OUTSIDE:
+            factor = [keep_sign, keep_sign]
+        else:
+            factor = [-1, 1] if keep_type == Keep.INSIDE else [1, -1]
+
         intersect = [
             points[i]
-            + keep_sign * radii[i] * (Vector(arc_center) - points[i]).normalized()
+            + factor[i] * radii[i] * (Vector(arc_center) - points[i]).normalized()
             for i in range(len(arcs))
         ]
 

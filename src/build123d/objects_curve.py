@@ -1375,14 +1375,19 @@ class ArcArcTangentArc(BaseEdgeObject):
 
     Create an arc tangent to two arcs and a radius.
 
+    keep specifies tangent arc position with a Keep pair: (placement, type)
+        placement: start_arc is tangent INSIDE or OUTSIDE the tangent arc
+            BOTH is a special case for overlapping arcs with type INSIDE
+        type: tangent arc is INSIDE or OUTSIDE start_arc and end_arc
+
     Args:
         start_arc (Curve | Edge | Wire): starting arc, must be GeomType.CIRCLE
         end_arc (Curve | Edge | Wire): ending arc, must be GeomType.CIRCLE
         radius (float): radius of tangent arc
         side (Side): side of arcs to place tangent arc center, LEFT or RIGHT.
             Defaults to Side.LEFT
-        keep (Keep): which tangent arc to keep, INSIDE or OUTSIDE.
-            Defaults to Keep.INSIDE
+        keep (Keep | tuple[Keep, Keep]): which tangent arc to keep, INSIDE or OUTSIDE.
+            Defaults to (Keep.INSIDE, Keep.INSIDE)
         mode (Mode, optional): combination mode. Defaults to Mode.ADD
     """
 
@@ -1394,16 +1399,21 @@ class ArcArcTangentArc(BaseEdgeObject):
         end_arc: Curve | Edge | Wire,
         radius: float,
         side: Side = Side.LEFT,
-        keep: Keep | tuple[Keep, Keep] = (Keep.INSIDE, Keep.OUTSIDE),
+        keep: Keep | tuple[Keep, Keep] = (Keep.INSIDE, Keep.INSIDE),
         mode: Mode = Mode.ADD,
     ):
-        keep_type, keep_placement = tuplify(keep, 2)
+        keep_placement, keep_type = tuplify(keep, 2)
 
         context: BuildLine | None = BuildLine._get_context(self)
         validate_inputs(context, self)
 
-        if start_arc.geom_type != GeomType.CIRCLE:
+        if keep_placement == Keep.BOTH and keep_type != Keep.INSIDE:
             raise ValueError("Start arc must have GeomType.CIRCLE.")
+
+        if start_arc.geom_type != GeomType.CIRCLE:
+            raise ValueError(
+                "Keep.BOTH can only be used in configuration: (Keep.BOTH, Keep.INSIDE)"
+            )
 
         if end_arc.geom_type != GeomType.CIRCLE:
             raise ValueError("End arc must have GeomType.CIRCLE.")
@@ -1419,7 +1429,7 @@ class ArcArcTangentArc(BaseEdgeObject):
             workplane = copy_module.copy(WorkplaneList._get_context().workplanes[0])
 
         side_sign = 1 if side == Side.LEFT else -1
-        keep_sign = 1 if keep_type == Keep.INSIDE else -1
+        keep_sign = 1 if keep_placement == Keep.OUTSIDE else -1
         arcs = [start_arc, end_arc]
         points = [arc.arc_center for arc in arcs]
         radii = [arc.radius for arc in arcs]
@@ -1431,48 +1441,108 @@ class ArcArcTangentArc(BaseEdgeObject):
         if midline.length == 0:
             raise ValueError("Cannot find tangent for concentric arcs.")
 
-        if midline.length <= abs(radii[1] - radii[0]):
-            raise NotImplementedError("Arc inside arc not yet implemented.")
+        if midline.length == sum(radii) and keep_type == Keep.INSIDE:
+            raise ValueError(
+                "Cannot find tangent type Keep.INSIDE for non-overlapping arcs already tangent."
+            )
 
-        # The range midline.length / 2 < tangent radius < math.inf should be valid
-        # Sometimes fails if min_radius == radius, so using >=
-        min_radius = (midline.length - keep_sign * (radii[0] + radii[1])) / 2
-        if keep_placement == Keep.OUTSIDE and min_radius >= radius:
+        if midline.length == abs(radii[0] - radii[1]) and keep_placement == Keep.INSIDE:
+            raise ValueError(
+                "Cannot find tangent placement Keep.INSIDE for completely overlapping arcs already tangent."
+            )
+
+        min_radius = 0
+        max_radius = None
+        r_sign = 1 if radii[0] < radii[1] else -1
+        x_sign = [1, 1]
+        pick_index = 0
+        if midline.length > abs(radii[0] - radii[1]) and keep_type == Keep.OUTSIDE:
+            # No full overlap, placed externally
+            ref_radii = [keep_sign * radii[0] + radius, keep_sign * radii[1] + radius]
+            x_sign = [keep_sign, keep_sign]
+            min_radius = (midline.length - keep_sign * (radii[0] + radii[1])) / 2
+            min_radius = 0 if min_radius < 0 else min_radius
+
+        elif midline.length > radii[0] + radii[1] and keep_type == Keep.INSIDE:
+            # No overlap, placed inside
+            ref_radii = [
+                abs(radii[0] + keep_sign * radius),
+                abs(radii[1] - keep_sign * radius),
+            ]
+            x_sign = [1, -1] if keep_placement == Keep.OUTSIDE else [-1, 1]
+            min_radius = (midline.length - keep_sign * (radii[0] - radii[1])) / 2
+
+        elif midline.length <= abs(radii[0] - radii[1]):
+            # Full Overlap
+            pick_index = -1
+            if keep_placement == Keep.OUTSIDE:
+                print(1)
+                # External tangent to start
+                ref_radii = [radii[0] + r_sign * radius, radii[1] - r_sign * radius]
+                min_radius = (
+                    -midline.length - r_sign * radii[0] + r_sign * radii[1]
+                ) / 2
+                max_radius = (
+                    midline.length - r_sign * radii[0] + r_sign * radii[1]
+                ) / 2
+
+            elif keep_placement == Keep.INSIDE:
+                print(2)
+                # Internal tangent to start
+                ref_radii = [abs(radii[0] - radius), abs(radii[1] - radius)]
+                min_radius = (-midline.length + radii[0] + radii[1]) / 2
+                max_radius = (midline.length + radii[0] + radii[1]) / 2
+                if radii[0] < radii[1]:
+                    x_sign = [-1, 1]
+                else:
+                    x_sign = [1, -1]
+        else:
+            # Partial Overlap
+            pick_index = -1
+            if keep_placement == Keep.BOTH:
+                # Internal tangent to both
+                ref_radii = [abs(radii[0] - radius), abs(radii[1] - radius)]
+                max_radius = (-midline.length + radii[0] + radii[1]) / 2
+
+            elif keep_placement == Keep.OUTSIDE:
+                # External tangent to start
+                ref_radii = [radii[0] + r_sign * radius, radii[1] - r_sign * radius]
+                max_radius = (
+                    midline.length - r_sign * radii[0] + r_sign * radii[1]
+                ) / 2
+
+            elif keep_placement == Keep.INSIDE:
+                # Internal tangent to start
+                ref_radii = [radii[0] - r_sign * radius, radii[1] + r_sign * radius]
+                max_radius = (
+                    midline.length + r_sign * radii[0] - r_sign * radii[1]
+                ) / 2
+
+        if min_radius >= radius:
             raise ValueError(
                 f"The arc radius is too small. Should be greater than {min_radius}."
             )
 
-        min_radius = (midline.length + keep_sign * (radii[0] - radii[1])) / 2
-        if keep_placement == Keep.INSIDE and min_radius >= radius:
+        if max_radius is not None and max_radius <= radius:
             raise ValueError(
-                f"The arc radius is too small. Should be greater than {min_radius}."
+                f"The arc radius is too large. Should be less than {max_radius}."
             )
 
         # Method:
         # https://www.youtube.com/watch?v=-STj2SSv6TU
+        # For (*, OUTSIDE) Not completely overlapping
         # - the centerpoint of the inner arc is found by the intersection of the
         #   arcs made by adding the inner radius to the point radii
         # - the centerpoint of the outer arc is found by the intersection of the
         #   arcs made by subtracting the outer radius from the point radii
         # - then it's a matter of finding the points where the connecting lines
         #   intersect the point circles
+        # Other placements and types vary construction radii
         local = [workplane.to_local_coords(p) for p in points]
-        if keep_placement == Keep.OUTSIDE:
-            ref_circles = [
-                sympy.Circle(
-                    sympy.Point(local[i].X, local[i].Y), keep_sign * radii[i] + radius
-                )
-                for i in range(len(arcs))
-            ]
-        else:
-            ref_circles = [
-                sympy.Circle(
-                    sympy.Point(local[0].X, local[0].Y), abs(radii[0] - keep_sign * radius)
-                ),
-                sympy.Circle(
-                    sympy.Point(local[1].X, local[1].Y), abs(radii[1] + keep_sign * radius)
-                )
-            ]
+        ref_circles = [
+            sympy.Circle(sympy.Point(local[i].X, local[i].Y), ref_radii[i])
+            for i in range(len(arcs))
+        ]
 
         ref_intersections = ShapeList(
             [
@@ -1482,16 +1552,11 @@ class ArcArcTangentArc(BaseEdgeObject):
                 for p in sympy.intersection(*ref_circles)
             ]
         )
-        arc_center = ref_intersections.sort_by(Axis(points[0], normal))[0]
-
-        if keep_placement == Keep.OUTSIDE:
-            factor = [keep_sign, keep_sign]
-        else:
-            factor = [-1, 1] if keep_type == Keep.INSIDE else [1, -1]
+        arc_center = ref_intersections.sort_by(Axis(points[0], normal))[pick_index]
 
         intersect = [
             points[i]
-            + factor[i] * radii[i] * (Vector(arc_center) - points[i]).normalized()
+            + x_sign[i] * radii[i] * (Vector(arc_center) - points[i]).normalized()
             for i in range(len(arcs))
         ]
 
@@ -1503,7 +1568,10 @@ class ArcArcTangentArc(BaseEdgeObject):
         # Check and flip arc if not tangent
         start_circle = CenterArc(start_arc.arc_center, start_arc.radius, 0, 360)
         _, _, point = start_circle.distance_to_with_closest_points(arc)
-        if start_circle.tangent_at(point).cross(arc.tangent_at(point)).length > TOLERANCE:
+        if (
+            start_circle.tangent_at(point).cross(arc.tangent_at(point)).length
+            > TOLERANCE
+        ):
             arc = RadiusArc(intersect[0], intersect[1], radius=-radius)
 
         super().__init__(arc, mode)

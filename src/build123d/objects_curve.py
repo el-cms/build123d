@@ -45,7 +45,7 @@ from build123d.build_enums import (
 )
 from build123d.build_line import BuildLine
 from build123d.geometry import Axis, Plane, Vector, VectorLike, TOLERANCE
-from build123d.topology import Edge, Face, Wire, Curve, tuplify
+from build123d.topology import Edge, Face, Wire, Curve
 from build123d.topology.shape_core import ShapeList
 
 
@@ -1377,7 +1377,8 @@ class ArcArcTangentArc(BaseEdgeObject):
 
     keep specifies tangent arc position with a Keep pair: (placement, type)
 
-    - placement: start_arc is tangent INSIDE or OUTSIDE the tangent arc. BOTH is a special case for overlapping arcs with type INSIDE
+    - placement: start_arc is tangent INSIDE or OUTSIDE the tangent arc. BOTH is a 
+      special case for overlapping arcs with type INSIDE
     - type: tangent arc is INSIDE or OUTSIDE start_arc and end_arc
 
     Args:
@@ -1405,7 +1406,7 @@ class ArcArcTangentArc(BaseEdgeObject):
         short_sagitta: bool = True,
         mode: Mode = Mode.ADD,
     ):
-        keep_placement, keep_type = tuplify(keep, 2)
+        keep_placement, keep_type = (keep, keep) if isinstance(keep, Keep) else keep
 
         context: BuildLine | None = BuildLine._get_context(self)
         validate_inputs(context, self)
@@ -1446,15 +1447,17 @@ class ArcArcTangentArc(BaseEdgeObject):
 
         if midline.length == sum(radii) and keep_type == Keep.INSIDE:
             raise ValueError(
-                "Cannot find tangent type Keep.INSIDE for non-overlapping arcs already tangent."
+                "Cannot find tangent type Keep.INSIDE for non-overlapping arcs " \
+                "already tangent."
             )
 
         if midline.length == abs(radii[0] - radii[1]) and keep_placement == Keep.INSIDE:
             raise ValueError(
-                "Cannot find tangent placement Keep.INSIDE for completely overlapping arcs already tangent."
+                "Cannot find tangent placement Keep.INSIDE for completely " \
+                "overlapping arcs already tangent."
             )
 
-        min_radius = 0
+        min_radius = 0.
         max_radius = None
         r_sign = 1 if radii[0] < radii[1] else -1
         x_sign = [1, 1]

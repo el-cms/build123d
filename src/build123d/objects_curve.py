@@ -1443,16 +1443,19 @@ class ArcArcTangentArc(BaseEdgeObject):
         midline = points[1] - points[0]
         normal = side_sign * midline.cross(workplane.z_dir)
 
-        if midline.length == 0:
+        if midline.length < TOLERANCE:
             raise ValueError("Cannot find tangent for concentric arcs.")
 
-        if midline.length == sum(radii) and keep_type == Keep.INSIDE:
+        if abs(midline.length - sum(radii)) < TOLERANCE and keep_type == Keep.INSIDE:
             raise ValueError(
                 "Cannot find tangent type Keep.INSIDE for non-overlapping arcs "
                 "already tangent."
             )
 
-        if midline.length == abs(radii[0] - radii[1]) and keep_placement == Keep.INSIDE:
+        if (
+            abs(midline.length - abs(radii[0] - radii[1])) < TOLERANCE
+            and keep_placement == Keep.INSIDE
+        ):
             raise ValueError(
                 "Cannot find tangent placement Keep.INSIDE for completely "
                 "overlapping arcs already tangent."
